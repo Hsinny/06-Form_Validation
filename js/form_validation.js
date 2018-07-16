@@ -15,9 +15,8 @@
   $('form').on('submit', function (e) {      // 當表單被送出
     var elements = this.elements;            // form.elements => form 裡的所有表單控制元件集合
     var isValid;                             // 檢測表單控制元件的驗證狀態
-    var valid = {};                          // Custom valid object
-    
-    var isFormValid;                         // isFormValid: checks entire form
+    var valid = {};                          // 自訂驗證物件
+    var isFormValid;                         // 檢測整個表單
 
     // 對每一個表單控制元件執行"通用檢測"
     for (let i = 0; i < (elements.length - 1); i++) {       // 迴圈 -1 為減掉 submit 按鈕元件
@@ -31,7 +30,7 @@
       valid[elements[i].id] = isValid;        // 將元件加入至 valid 物件
     }                                         // 迴圈結束
 
-    // PERFORM CUSTOM VALIDATION
+    // 執行自訂驗證
     // bio (you could cache bio input in variable here)
     // if (!validateBio()) {                // Call validateBio(), and if not valid
     //   showErrorMessage(document.getElementById('bio')); // Show error message
@@ -40,19 +39,12 @@
     //   removeErrorMessage(document.getElementById('bio'));
     // }
 
-    // Email 
-    if (!validateEmail()) {
-      showErrorMessage(document.getElementById('email'));
-      valid.email = false;
-    } else {
-      removeErrorMessage(document.getElementById('email'));
-    }
-
     // password (you could cache password input in variable here)
-    if (!validatePassword()) {          // Call validatePassword(), and if not valid
-      showErrorMessage(document.getElementById('password')); // Show error message
-      valid.password = false;           // Update the valid object - this element is not valid
-    } else {                            // Otherwise remove error message
+    // 呼叫 validatePassword()
+    if (!validatePassword()) {          // 呼叫 validatePassword()，如果傳回true表示有效，無效則顯示錯誤訊息
+      showErrorMessage(document.getElementById('password')); // 顯示錯誤訊息
+      valid.password = false;           // 更新自訂驗證物件，此元件沒通過驗證為 false 狀態
+    } else {                           
       removeErrorMessage(document.getElementById('password'));
     }
 
@@ -72,20 +64,20 @@
     //   removeErrorMessage(document.getElementById('parents-consent'));
     // }
 
-    // DID IT PASS / CAN IT SUBMIT THE FORM?
-    // Loop through valid object, if there are errors set isFormValid to false
-    for (var field in valid) {          // Check properties of the valid object
-      if (!valid[field]) {              // If it is not valid
-        isFormValid = false;            // Set isFormValid variable to false
-        break;                          // Stop the for loop, an error was found
-      }                                 // Otherwise
-      isFormValid = true;               // The form is valid and OK to submit
+    // 是否通過檢測 / 可否送出表單？
+    // 迴圈巡訪 valid 物件，如果有任何錯誤，設定 isFormValid 為 false
+    for (var field in valid) {          // 檢測 valid 物件的特性
+      if (!valid[field]) {              // 如果特型值為無效
+        isFormValid = false;            
+        break;                          // 發現有元件欄位錯誤，停止迴圈
+      }                                 
+      isFormValid = true;               // 欄位皆正確，表單可以送出
     }
 
 
-    // If the form did not validate, prevent it being submitted
-    if (!isFormValid) {                 // If isFormValid is not true
-      e.preventDefault();               // Prevent the form being submitted
+    // 如果表單未通過驗證，停止表單送出
+    if (!isFormValid) {                 
+      e.preventDefault();    
     }
 
   });                                   // End of event handler anon function
@@ -134,9 +126,9 @@
                                                                // 則為若瀏覽器無法辨識 HTML5 的 DOM 特性，則會值街回傳text值
     if (typeof validateType[type] === 'function') { // validateType 為自訂物件，[type]為物件key值
                                                     // 此元件的 type 是否有在檢測方法內
-      return validateType[type](el);                // If yes, check if the value validates
-    } else {                                        // If not
-      return true;                                  // Return true because it cannot be tested
+      return validateType[type](el);                // 若通過檢測方法會得到回傳的 true，再回傳 true
+    } else {                                        
+      return true;
     }
   }
 
@@ -169,19 +161,10 @@
     return valid;
   }
 
-  // Check Email
-  function validateEmail() {
-    var email = document.getElementById('email');
-    var valid = email.value.length >= 8;
-    if (!valid) {
-      setErrorMessage(email, 'INVALID EMAIL');
-    }
-    return valid;
-  }
+  var password = document.getElementById('password');
 
-  // Check that the passwords both match and are 8 characters or more
+  // 檢查輸入的密碼是否有8個字以上
   function validatePassword() {
-    var password = document.getElementById('password');
     var valid = password.value.length >= 8;
     if (!valid) {
       setErrorMessage(password, 'INIMUM 8 CHARACTERS');
@@ -189,12 +172,17 @@
     return valid;
   }
 
-  // Check passwords again
+  // Check passwords again 元件值與密碼相同
   function validateComfirmPassword() {
     var confPassword = document.getElementById('conf-password');
-    var valid = (confPassword.value === password.value);
+    
+    var valid = (confPassword.value === password.value) && (confPassword.value.length >= 8) ; 
     if (!valid) {
-      setErrorMessage(password, 'NOT MATCH');
+      if (confPassword.value.length < 8) {
+        setErrorMessage(confPassword, 'INIMUM 8 CHARACTERS');
+      } else {
+        setErrorMessage(confPassword, 'NOT MATCH');
+      }
     }
     return valid;
   }
@@ -225,7 +213,6 @@
     var $el = $(el);                                     // 未通過檢測的欄位元件
     var errorContainer = $el.siblings('.error.message'); // .siblings() 目前選取集合的所有兄弟元件，有符合此class的兄弟
                                                          // Any siblings holding an error message
-    console.log(errorContainer);
 
     if (!errorContainer.length) {                         // 如果沒有發現錯誤
       // 建立<span>來保存錯誤，並加入到錯誤元件的後方
@@ -242,34 +229,34 @@
 
 
   // -------------------------------------------------------------------------
-  // E) OBJECT FOR CHECKING TYPES
+  // E) 建立物件以驗證資料型別
   // -------------------------------------------------------------------------
 
-  // Checks whether data is valid, if not set error message
-  // Returns true if valid, false if invalid
+  // 檢查值是否為有效，無效設定錯誤訊息
+  // 有效返回 true，無效 false
+  // validateTypes() 函式內用到
   var validateType = {
-    email: function (el) {                                 // Create email() method
-      // Rudimentary regular expression that checks for a single @ in the email
-      var valid = /[^@]+@[^@]+/.test(el.value);            // Store result of test in valid
-      if (!valid) {                                        // If the value of valid is not true
-        setErrorMessage(el, 'Please enter a valid email'); // Set error message
+    email: function (el) {                                 // 建立 Email 檢測方法
+      var valid = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(el.value);
+                                                           // 正規標示法，通過檢測會得到 true
+      if (!valid) {                                        // 若 false 沒通過檢測，設定錯誤訊息
+        setErrorMessage(el, 'INVALID EMAIL'); 
       }
-      return valid;                                        // Return the valid variable
+      return valid;                                   
     },
-    number: function (el) {                                // Create number() method
-      var valid = /^\d+$/.test(el.value);                  // Store result of test in valid
+    number: function (el) {                                // 建立密碼檢測方法
+      var valid = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,10}$/.test(el.value); // 限制：{8-10}字元，至少有一個數字/小寫英文字母/大寫英文字母               
       if (!valid) {
         setErrorMessage(el, 'Please enter a valid number');
       }
       return valid;
     },
-    date: function (el) {                                  // Create date() method
-      // Store result of test in valid
+    date: function (el) {                                  // 建立日期檢測方法
       var valid = /^(\d{2}\/\d{2}\/\d{4})|(\d{4}-\d{2}-\d{2})$/.test(el.value);
-      if (!valid) {                                        // If the value of valid is not true
-        setErrorMessage(el, 'Please enter a valid date');  // Set error message
+      if (!valid) {                                        
+        setErrorMessage(el, 'Please enter a valid date'); 
       }
-      return valid;                                        // Return the valid variable
+      return valid;                                     
     }
   };
 
