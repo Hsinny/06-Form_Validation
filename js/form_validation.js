@@ -30,24 +30,8 @@
       valid[elements[i].id] = isValid;        // 將元件加入至 valid 物件
     }                                         // 迴圈結束
 
+
     // 執行自訂驗證
-    // bio (you could cache bio input in variable here)
-    // if (!validateBio()) {                // Call validateBio(), and if not valid
-    //   showErrorMessage(document.getElementById('bio')); // Show error message
-    //   valid.bio = false;                 // Update valid object - this element is not valid
-    // } else {                             // Otherwise remove error message
-    //   removeErrorMessage(document.getElementById('bio'));
-    // }
-
-    // password (you could cache password input in variable here)
-    // 呼叫 validatePassword()
-    if (!validatePassword()) {          // 呼叫 validatePassword()，如果傳回true表示有效，無效則顯示錯誤訊息
-      showErrorMessage(document.getElementById('password')); // 顯示錯誤訊息
-      valid.password = false;           // 更新自訂驗證物件，此元件沒通過驗證為 false 狀態
-    } else {                           
-      removeErrorMessage(document.getElementById('password'));
-    }
-
     // Comfirm password
     if (!validateComfirmPassword()) {
       showErrorMessage(document.getElementById('conf-password'));
@@ -56,13 +40,6 @@
       removeErrorMessage(document.getElementById('conf-password'));
     }
 
-    // parental consent (you could cache parent-consent in variable here)
-    // if (!validateParentsConsent()) {     // Call validateParentalConsent(), and if not valid
-    //   showErrorMessage(document.getElementById('parents-consent')); // Show error message
-    //   valid.parentsConsent = false;      // Update the valid object - this is not valid
-    // } else {                             // Otherwise remove error message
-    //   removeErrorMessage(document.getElementById('parents-consent'));
-    // }
 
     // 是否通過檢測 / 可否送出表單？
     // 迴圈巡訪 valid 物件，如果有任何錯誤，設定 isFormValid 為 false
@@ -74,10 +51,14 @@
       isFormValid = true;               // 欄位皆正確，表單可以送出
     }
 
-
+    
     // 如果表單未通過驗證，停止表單送出
-    if (!isFormValid) {                 
+    if (!isFormValid) {   
       e.preventDefault();    
+    } else {
+      e.preventDefault();
+      sendForm();
+      
     }
 
   });                                   // End of event handler anon function
@@ -96,7 +77,7 @@
     if (isRequired(el)) {                           // 如果元件欄位為必填
       var valid = !isEmpty(el);                     // 欄位是否為空 ( 空值 true / false )?
       if (!valid) {                                 // 如果 valid 變數為 false
-        setErrorMessage(el, 'Field is required');   // 設定錯誤訊息
+        setErrorMessage(el, '請輸入');               // 設定錯誤訊息
       }
       return valid;                                 // 回傳 valid 變數 (true or false)?
     }
@@ -136,52 +117,19 @@
   // C) FUNCTIONS FOR CUSTOM VALIDATION
   // -------------------------------------------------------------------------
 
-  // IF USER IS UNDER 13, CHECK THAT PARENTS HAVE TICKED THE CONSENT CHECKBOX
-  // Dependency: birthday.js (otherwise check does not work)
-  function validateParentsConsent() {
-    var parentsConsent = document.getElementById('parents-consent');
-    var consentContainer = document.getElementById('consent-container');
-    var valid = true;                          // Variable: valid set to true
-    // if (consentContainer.className.indexOf('hide') === -1) { // If checkbox shown
-    //   valid = parentsConsent.checked;          // Update valid: is it checked/not
-    //   if (!valid) {                            // If not, set the error message
-    //     setErrorMessage(parentsConsent, 'You need your parents\' consent');
-    //   }
-    // }
-    return valid;                               // Return whether valid or not
-  }
-
-  // Check if the bio is less than or equal to 140 characters
-  function validateBio() {
-    var bio = document.getElementById('bio');
-    var valid = bio.value.length <= 140;
-    if (!valid) {
-      setErrorMessage(bio, 'Please make sure your bio does not exceed 140 characters');
-    }
-    return valid;
-  }
-
-  var password = document.getElementById('password');
-
-  // 檢查輸入的密碼是否有8個字以上
-  function validatePassword() {
-    var valid = password.value.length >= 8;
-    if (!valid) {
-      setErrorMessage(password, 'INIMUM 8 CHARACTERS');
-    }
-    return valid;
-  }
-
   // Check passwords again 元件值與密碼相同
   function validateComfirmPassword() {
+    var password = document.getElementById('password');  
     var confPassword = document.getElementById('conf-password');
-    
     var valid = (confPassword.value === password.value) && (confPassword.value.length >= 8) ; 
     if (!valid) {
-      if (confPassword.value.length < 8) {
-        setErrorMessage(confPassword, 'INIMUM 8 CHARACTERS');
+      
+      if (confPassword.value.length < 1) {
+        setErrorMessage(confPassword, '請輸入');
+      } else if ((confPassword.value.length < 8) && (confPassword.value.length >= 1)) {
+        setErrorMessage(confPassword, '請輸入8碼數字英文 ( 至少包含一個大寫字母、一個小寫字母、一個數字 )');
       } else {
-        setErrorMessage(confPassword, 'NOT MATCH');
+        setErrorMessage(confPassword, '兩次輸入密碼不同');
       }
     }
     return valid;
@@ -214,7 +162,8 @@
     var errorContainer = $el.siblings('.error.message'); // .siblings() 目前選取集合的所有兄弟元件，有符合此class的兄弟
                                                          // Any siblings holding an error message
 
-    if (!errorContainer.length) {                         // 如果沒有發現錯誤
+    if (!errorContainer.length) {   
+      $el.addClass('error');
       // 建立<span>來保存錯誤，並加入到錯誤元件的後方
       errorContainer = $('<span class="error message"></span>').insertAfter($el);
     }
@@ -223,6 +172,7 @@
 
   function removeErrorMessage(el) {
     var errorContainer = $(el).siblings('.error.message'); // Get the sibling of this form control used to hold the error message
+    $(el).removeClass('error');
     errorContainer.remove();                               // Remove the element that contains the error message
   }
 
@@ -240,14 +190,14 @@
       var valid = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(el.value);
                                                            // 正規標示法，通過檢測會得到 true
       if (!valid) {                                        // 若 false 沒通過檢測，設定錯誤訊息
-        setErrorMessage(el, 'INVALID EMAIL'); 
+        setErrorMessage(el, '請輸入有效的電子郵件地址'); 
       }
       return valid;                                   
     },
-    number: function (el) {                                // 建立密碼檢測方法
+    password: function (el) {  
       var valid = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,10}$/.test(el.value); // 限制：{8-10}字元，至少有一個數字/小寫英文字母/大寫英文字母               
       if (!valid) {
-        setErrorMessage(el, 'Please enter a valid number');
+        setErrorMessage(el, '請輸入8碼數字英文 ( 至少包含一個大寫字母、一個小寫字母、一個數字 )');
       }
       return valid;
     },
@@ -259,5 +209,149 @@
       return valid;                                     
     }
   };
+
+
+
+
+  // -------------------------------------------------------------------------
+  // F) 離開輸入框，再次檢測欄位
+  // -------------------------------------------------------------------------
+  // var email = document.getElementById('email'); // Store password inputs
+  // var password = document.getElementById('password'); // Store password inputs
+  // var passwordConfirm = document.getElementById('conf-password');
+
+
+  // function emailOk(e){
+  //   var target = e.target || e.srcElement;
+  //   console.log('t');
+  //   if (validateTypes(target)){
+  //     target.classList.add('ok');                         // Set class to pass
+  //   } else {                   
+  //     console.log('error');                          // Otherwise
+  //     target.classList.add('error');                         // Set class to fail
+  //   } 
+  // }
+
+  // function setErrorHighlighter(e) {
+  //   var target = e.target || e.srcElement;             // Get target element
+  //   if (target.value.length < 8) {                     // If its length is < 8
+  //     target.classList.add('error');                       // Set class to fail
+  //   } else {                                           // Otherwise
+  //     target.classList.add('ok');                       // Set class to pass
+  //   }
+  // }
+
+  // function removeErrorHighlighter(e) {
+  //   var target = e.target || e.srcElement;              // Get target element
+  //   if (target.classList.contains('error')) {                  // If class shows fail
+  //     target.classList.remove('error');                            // Clear class
+  //   }
+  // }
+
+  // function passwordsMatch(e) {
+  //   var target = e.target || e.srcElement;               // Get target element
+  //   // If value matches pwd and it is longer than 8 characters
+  //   if ((password.value === target.value) && target.value.length >= 8) {
+  //     target.classList.add('ok');                         // Set class to pass
+  //   } else {                                             // Otherwise
+  //     target.classList.add('error');                         // Set class to fail
+  //   }
+  // }
+  
+  // email.addEventListener('focus', removeErrorHighlighter, false);
+  // email.addEventListener('blur', emailOk, false);
+  // password.addEventListener('focus', removeErrorHighlighter, false);
+  // password.addEventListener('blur', setErrorHighlighter, false);
+  // passwordConfirm.addEventListener('focus', removeErrorHighlighter, false);
+  // passwordConfirm.addEventListener('blur', passwordsMatch, false);
+  // password.addEventListener('focus', removeErrorHighlighter, false);
+
+
+
+  // -------------------------------------------------------------------------
+  // G) 送出註冊表單
+  // -------------------------------------------------------------------------
+  // AJAX post 向伺服器取得 Email 帳號 
+  //   1. 透過XMLHttpRequest()物件向伺服器請求資料
+  //   2. 設定請求資料 => .open( 方法 get / post , 資料網址, true 同步 / false 非同步)
+  //   3. xhr.setRequestHeader('Content-type','application/json')  => 告訴伺服器傳送的資料格式，使用json格式
+  //   3. 發送請求 => .send() ，括號內傳送的內容格式需為string
+  //   4. 瀏覽器撈到資料後觸發 => .onload(XMLHttpRequest物件裡的方法)
+  //   5. 撈到的資料放在 XMLHttpRequest物件的.responseText
+  //   6. 撈到的資料格式為string，轉成object => JSON.parse()
+  //   7. 信箱已註冊返回表單，註冊成功跳至會員中心
+  // -------------------------------------------------------------------------
+  function sendForm(){
+    var emailEl = document.getElementById('email');
+    var emailStr = emailEl.value;
+    var account = {};           // 儲存要傳送給伺服器的資料
+    account.email = emailStr;   // 資料使用 json 格式
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open('post', 'https://www.thef2e.com/api/isSignUp', true); 
+    xhr.setRequestHeader('Content-type','application/json'); 
+    var data = JSON.stringify(account);
+    xhr.send(data);
+    loading();         // loading 動畫
+
+    xhr.onload = function () {
+      removeLoading(); // 撈到資料，關閉 loading 動畫
+
+      var callbackData = JSON.parse(xhr.responseText);
+      var veriStr = callbackData.success;  // 此 Email 已報名過 => true
+      if (veriStr) {
+        setErrorMessage(emailEl, '此信箱已註冊');
+        showErrorMessage(emailEl);
+      } else {
+        removeErrorMessage(emailEl);
+        location.href = 'account.html';    // 跳轉至指定的 url 頁面
+      }
+    }
+  }
+  
+
+  // -------------------------------------------------------------------------
+  // 迴圈產生選單的 option 選項 (年月日)
+  // -------------------------------------------------------------------------  
+  var yearEl = document.getElementById('birth-year');
+  var monthEl = document.getElementById('birth-month');
+  var dayEl = document.getElementById('birth-day');
+  var countDown = true;
+
+  function optionItem(start, end, el, dateStr, countDown){
+    var str = '';
+    var firstOption = `<option selected disabled="disabled">${dateStr}</option>`;
+    if (!countDown) {
+      for (var i = start; i < end + 1; i++) {
+        var option = `<option>${i}</option>`;
+        str += option;
+      }
+    } else {
+      for (var i = end; i > start - 1; i--) {
+        var option = `<option>${i}</option>`;
+        str += option;
+      }
+    }    
+    el.innerHTML = firstOption + str;
+  }
+
+  optionItem(1, 31, dayEl, '日');
+  optionItem(1, 12, monthEl, '月');
+  optionItem(1900, 2018, yearEl, '西元年', countDown);
+  
+
+
+  // -------------------------------------------------------------------------
+  // Loding
+  // -------------------------------------------------------------------------
+  function loading(){
+    $('#loading').fadeIn();
+    $('body').addClass('overflow');
+  }
+
+  function removeLoading() {
+    $('#loading').fadeOut();
+    $('body').removeClass('overflow');
+  }
 
 }());  // End of IIFE
