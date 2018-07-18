@@ -1,14 +1,149 @@
 // *
 //   outline: 1px solid $gray-500
 
+$height: 70px
+$border-gray: 1px solid $gray-400
+$border-gray-light: 1px solid $gray-200
+$gray-blue: #979DBC
+.bg-light
+  background-color: #F1F2F7
 
 /*------------------------------------*/
 /* Layout   
 /*------------------------------------*/ 
 main 
   height: calc(100vh - 71px)
-  display: flex
 
+section 
+  width: 100%
+  
+.section-header
+  height: 70px
+  line-height: 70px
+  letter-spacing: 1px
+  color: $gray-blue
+  font-size: 18px
+  font-weight: 700
+  border:
+    right: $border-gray
+    bottom: $border-gray
+  padding: 0 32px
+
+
+/*------------------------------------*/
+/* Account   
+/*------------------------------------*/ 
+.account
+  height: calc(100vh - 140px)
+  border-right: $border-gray
+
+.account-body
+  letter-spacing: 1px
+  border-bottom: $border-gray
+  padding: 40px
+  &:last-child
+    border-bottom: 0
+  &> div:last-child
+    margin-bottom: 0
+
+.account-body-img
+  +size(160px)
+  border-radius: 50%
+  display: block
+  margin: 0 auto 32px
+  position: relative
+  // &:after
+  //   content: url('../images/icon-edit.svg')
+  //   +size(16px)
+  //   line-height: 16px
+  //   background-color: $primary
+  //   border-radius: 50%
+  //   display: inline-block
+  //   box-sizing: initial
+  //   padding: 8px
+  //   position: absolute
+  //   bottom: 0 
+  //   right: 8px
+
+.btn-circle
+  +size(32px)
+  background-color: $primary
+  border-radius: 50%
+  padding: 8px
+  // display: inline-block
+  // box-sizing: initial
+  // padding: 8px
+  // position: absolute
+  // bottom: 0 
+  // right: 8px
+
+.icon-edit
+  position: absolute
+  bottom: 0 
+  right: 8px
+
+.account-body-name
+  color: $black
+  font-size: 22px
+  font-weight: 700
+  text-align: center
+  margin-bottom: 16px
+
+.account-body-email
+  color: $gray-600
+  font-size: 15px
+  text-align: center
+  margin-bottom: 40px
+
+.account-body-title
+  color: $black
+  font-size: 22px
+  font-weight: 700
+  margin-bottom: 32px
+
+.account-body-item
+  color: $gray-600
+  font-size: 15px
+  margin-bottom: 24px
+  &:last-child
+    margin-bottom: 0
+  &:before
+    content: ''
+    +size(16px)
+    border: 4px solid $primary
+    border-radius: 50%
+    display: inline-block
+    vertical-align: middle
+    margin-right: 24px
+  
+.account-body-progress
+  margin-bottom: 24px 
+  .progress
+    margin-bottom: 40px
+  .progress-bar
+    //
+
+.account-body-progress-txt
+  width: 33.3%
+  text-align: center
+  float: left
+  .number
+    font-size: 26px
+    font-weight: 700
+    margin-bottom: 8px
+  .title
+    color: $gray-600
+    font-size: 16px
+    font-weight: 500
+  .subtitle
+    color: $gray-600
+    font-size: 14px
+    font-weight: 500
+
+
+/*------------------------------------*/
+/* Login  
+/*------------------------------------*/
 .login
   background: no-repeat 
   // background-image: linear-gradient(to top, #4481eb 0%, #04befe 100%)
@@ -18,6 +153,7 @@ main
   .nav-item
     width: 50%
     text-align: center
+
 
 /*------------------------------------*/
 /* Form   
@@ -61,21 +197,55 @@ form
           background-size: 20px, 20px
           background-position: center left 16px, center right 8px
     // &.ok
-      // &::placeholder
+      // &:placeholder
       // background-image: url(../images/icon-check.svg)
       // background-repeat: no-repeat
       // background-size: 20px
       // background-position: center right 8px
-  .btn
-    +size(100%, 48px)
-    display: block
+  // .btn
+  //   +size(100%, 48px)
+  //   display: block
 
 label
-  // font-size: 
   margin-bottom: 0
 
 .form-tip
   font-size: 14px
+
+.form-customized
+  max-width: 768px
+  background-color: $white
+  border: $border-gray
+  border-radius: 10px
+  overflow: hidden
+  margin: 40px auto 
+  .form-group
+    border-bottom: $border-gray-light
+    padding: 8px 40px
+    margin-bottom: 0
+    &:last-child
+      border-bottom: 0
+    &.row
+      margin: auto 0
+    label
+      width: 20%
+      color: $gray-700
+      font-weight: 500
+      line-height: 42px
+    input, select
+      border: 0
+    input, select
+      width: 80%
+    .form-control
+      padding-left: 8px
+    .btn
+      margin: 0 auto
+
+.optional
+  color: $pink
+  vertical-align: super
+  margin-left: 2px
+    
 
 /*------------------------------------*/
 /* Error  
@@ -97,7 +267,11 @@ label
 /* Account Page  
 /*------------------------------------*/ 
 .account
-  border-top: 5px solid $primary
+  // border-top: 5px solid $primary
+
+.main
+  height: calc(100vh - 140px)
+  // background-color: #F1F2F7
 
 /*------------------------------------*/
 /* Loding 

@@ -310,36 +310,6 @@
   }
   
 
-  // -------------------------------------------------------------------------
-  // 迴圈產生選單的 option 選項 (年月日)
-  // -------------------------------------------------------------------------  
-  var yearEl = document.getElementById('birth-year');
-  var monthEl = document.getElementById('birth-month');
-  var dayEl = document.getElementById('birth-day');
-  var countDown = true;
-
-  function optionItem(start, end, el, dateStr, countDown){
-    var str = '';
-    var firstOption = `<option selected disabled="disabled">${dateStr}</option>`;
-    if (!countDown) {
-      for (var i = start; i < end + 1; i++) {
-        var option = `<option>${i}</option>`;
-        str += option;
-      }
-    } else {
-      for (var i = end; i > start - 1; i--) {
-        var option = `<option>${i}</option>`;
-        str += option;
-      }
-    }    
-    el.innerHTML = firstOption + str;
-  }
-
-  optionItem(1, 31, dayEl, '日');
-  optionItem(1, 12, monthEl, '月');
-  optionItem(1900, 2018, yearEl, '西元年', countDown);
-  
-
 
   // -------------------------------------------------------------------------
   // Loding
@@ -353,5 +323,86 @@
     $('#loading').fadeOut();
     $('body').removeClass('overflow');
   }
+
+
+
+  // -------------------------------------------------------------------------
+  // 迴圈產生選單的 option 選項 (年月日)
+  // -------------------------------------------------------------------------  
+  var yearEl = document.getElementById('birth-year');
+  var monthEl = document.getElementById('birth-month');
+  var dayEl = document.getElementById('birth-day');
+  var countDown = true;
+
+  function optionItem(start, end, el, dateStr, countDown) {
+    var str = '';
+    var firstOption = `<option selected disabled="disabled">${dateStr}</option>`;
+    if (!countDown) {
+      for (var i = start; i < end + 1; i++) {
+        var option = `<option>${i}</option>`;
+        str += option;
+      }
+    } else {
+      for (var i = end; i > start - 1; i--) {  // 年份用遞減倒序
+        var option = `<option>${i}</option>`;
+        str += option;
+      }
+    }
+    el.innerHTML = firstOption + str;
+  }
+
+  optionItem(1, 31, dayEl, '日');
+  optionItem(1, 12, monthEl, '月');
+  optionItem(1900, 2018, yearEl, '西元年', countDown);
+
+
+
+  // ------------------------------------------------------------------------
+  // 縣市地區選單
+  // ------------------------------------------------------------------------
+  var cityEl = document.getElementById('city');
+  var regionEl = document.getElementById('region');
+  var cityData, regionData;
+  var cityIndex = new Number;
+
+  function cityOption(dataArray, el){
+    var str = '';
+    for (let i = 0; i<dataArray.length; i++){
+      var option = `<option>${dataArray[i]}</option>`;
+      str += option;
+    }
+    el.innerHTML = str;
+  }
+  
+
+  function regionOption(e){
+    // console.log(e.target.value);
+    for (let i = 0; i < cityData.length; i++){
+      // console.log(cityEl[i].value);
+      console.log(cityData);
+      console.log(e.target.value);
+      
+      
+    }
+  }
+
+
+  var xhrCity = new XMLHttpRequest();
+  xhrCity.open('get', '../city.json', true); //https://hsinny.github.io/06-Form_Validation/city.json
+  xhrCity.send('');
+  xhrCity.onload = function () {
+    var callbackData = JSON.parse(xhrCity.responseText);
+    cityData = callbackData.city;
+    regionData = callbackData.region;
+    cityOption(cityData, cityEl);
+    // console.log('1');
+  }
+  cityEl.addEventListener('change', regionOption, false);
+
+
+
+  
+
+
 
 }());  // End of IIFE

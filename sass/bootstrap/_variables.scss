@@ -34,11 +34,11 @@ $grays: map-merge((
   "900": $gray-900
 ), $grays);
 
-$blue:    #0275D8 !default;
+$blue:    #4E78FE !default;
 $blue-light: #BEE1FF;
 $indigo:  #6610f2 !default;
 $purple:  #6f42c1 !default;
-$pink:    #e83e8c !default;
+$pink:    #FF537B !default;
 $red:     #dc3545 !default;
 $orange:  #F5A623 !default;
 $yellow:  #ffc107 !default;
@@ -209,7 +209,7 @@ $line-height-sm:              1.5 !default;
 $border-width:                1px !default;
 $border-color:                $gray-300 !default;
 
-$border-radius:               .25rem !default;
+$border-radius:               .25rem !default; 
 $border-radius-lg:            .3rem !default;
 $border-radius-sm:            .2rem !default;
 
@@ -354,8 +354,8 @@ $input-btn-border-width:      $border-width !default;
 //
 // For each of Bootstrap's buttons, define text, background, and border color.
 
-$btn-padding-y:               $input-btn-padding-y !default;
-$btn-padding-x:               $input-btn-padding-x !default;
+$btn-padding-y:               10px !default; // $input-btn-padding-y !default;
+$btn-padding-x:               32px !default; // $input-btn-padding-x !default;
 $btn-line-height:             $input-btn-line-height !default;
 
 $btn-padding-y-sm:            $input-btn-padding-y-sm !default;
