@@ -4034,7 +4034,7 @@ pre {
   width: 100%;
   padding: 0.375rem 0.75rem;
   font-size: 1rem;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.5;
   letter-spacing: 1px;
   color: #495057;
@@ -10562,6 +10562,12 @@ form .form-control {
   height: 48px;
   margin-bottom: 4px;
   padding-left: 48px; }
+  form .form-control::-webkit-input-placeholder {
+    color: #adb5bd; }
+  form .form-control:-ms-input-placeholder {
+    color: #adb5bd; }
+  form .form-control::placeholder {
+    color: #adb5bd; }
   form .form-control.input-icon.email {
     background-image: url(../images/icon-mail.svg);
     background-repeat: no-repeat;
@@ -10587,6 +10593,9 @@ form .form-control {
 
 label {
   margin-bottom: 0; }
+
+select.form-control:not([size]):not([multiple]) {
+  height: 48px; }
 
 .form-tip {
   font-size: 14px; }
@@ -10616,9 +10625,10 @@ label {
     .form-customized .form-group input, .form-customized .form-group select {
       width: 80%; }
     .form-customized .form-group .form-control {
-      padding-left: 8px; }
+      padding-left: 8px;
+      margin-bottom: 0; }
     .form-customized .form-group .btn {
-      margin: 0 auto; }
+      margin: 16px; }
 
 .optional {
   color: #FF537B;
@@ -10636,6 +10646,11 @@ label {
   letter-spacing: 1px;
   padding: 8px;
   margin-top: 8px; }
+
+.form-customized .error.message {
+  padding: 0 8px;
+  margin-top: 0px;
+  margin-left: 20%; }
 
 /*------------------------------------*/
 /* Account Page */

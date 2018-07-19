@@ -1,9 +1,9 @@
 // -------------------------------------------------------------------------
 // 迴圈產生選單的 option 選項 (年月日)
 // -------------------------------------------------------------------------  
-var yearEl = document.getElementById('birth-year');
-var monthEl = document.getElementById('birth-month');
-var dayEl = document.getElementById('birth-day');
+var yearEl = document.getElementById('birthYear');
+var monthEl = document.getElementById('birthMonth');
+var dayEl = document.getElementById('birthDay');
 var countDown = true;
 
 function optionItem(start, end, el, dateStr, countDown) {
@@ -21,7 +21,6 @@ function optionItem(start, end, el, dateStr, countDown) {
     }
   }
   el.innerHTML = firstOption + str;
-  // el.innerHTML = str;
 }
 
 optionItem(1, 31, dayEl, '日');
@@ -40,11 +39,12 @@ var cityData, regionData;    // 用來存放 json 內的縣市、地區資料
 // 縣市選單
 function cityOption(dataArray, el) {
   var str = '';
+  var firstOption = `<option selected disabled="disabled" style="color:red;">請選擇</option>`;
   for (let i = 0; i < dataArray.length; i++) {
     var option = `<option>${dataArray[i]}</option>`;
     str += option;
   }
-  el.innerHTML = str;
+  el.innerHTML =  firstOption + str;
 }
 
 // 地區選單：找出選取到的縣市索引值，再帶出第幾筆陣列

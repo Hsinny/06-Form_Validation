@@ -17,11 +17,16 @@
     var isValid;                             // 檢測表單控制元件的驗證狀態
     var valid = {};                          // 自訂驗證物件
     var isFormValid;                         // 檢測整個表單
-
+    
     // 對每一個表單控制元件執行"通用檢測"
     for (let i = 0; i < (elements.length - 1); i++) {       // 迴圈 -1 為減掉 submit 按鈕元件
       // validateRequired() 驗證欄位是否為必填 && validateTypes() 輸入的值是否有效
-      isValid = validateRequired(elements[i]) && validateTypes(elements[i]);
+      // isValid = validateRequired(elements[i]) && validateNames(elements[i]);
+
+      if (validateRequired(elements[i])) {
+        isValid = validateNames(elements[i]);
+      }
+
       if (!isValid) {                        // 如果元件未通過這兩種檢測
         showErrorMessage(elements[i]);       // 顯示錯誤訊息
       } else {                               // 否則
@@ -29,16 +34,36 @@
       }                                  
       valid[elements[i].id] = isValid;        // 將元件加入至 valid 物件
     }                                         // 迴圈結束
-
+    
+    // 執行自訂驗證
+    // password 元件存在，才執行
+    if (document.getElementById('password')) {
+      // Comfirm password
+      if (!validateComfirmPassword()) {
+        showErrorMessage(document.getElementById('conf-password'));
+        valid.confPassword = false;
+      } else {
+        removeErrorMessage(document.getElementById('conf-password'));
+      }
+    }
+    
+    // if (document.getElementById('phone')) {
+    //   if (!validateComfirmPhone()) {
+    //     showErrorMessage(document.getElementById('phone'));
+    //     valid.phone = false;
+    //   } else {
+    //     removeErrorMessage(document.getElementById('phone'));
+    //   }
+    // }
 
     // 執行自訂驗證
     // Comfirm password
-    if (!validateComfirmPassword()) {
-      showErrorMessage(document.getElementById('conf-password'));
-      valid.confPassword = false;
-    } else {
-      removeErrorMessage(document.getElementById('conf-password'));
-    }
+    // if (!validateComfirmPassword()) {
+    //   showErrorMessage(document.getElementById('conf-password'));
+    //   valid.confPassword = false;
+    // } else {
+    //   removeErrorMessage(document.getElementById('conf-password'));
+    // }
 
 
     // 是否通過檢測 / 可否送出表單？
@@ -47,21 +72,18 @@
       if (!valid[field]) {              // 如果特型值為無效
         isFormValid = false;            
         break;                          // 發現有元件欄位錯誤，停止迴圈
-      }                                 
+      }       
       isFormValid = true;               // 欄位皆正確，表單可以送出
     }
 
-    
     // 如果表單未通過驗證，停止表單送出
     if (!isFormValid) {   
       e.preventDefault();    
     } else {
       e.preventDefault();
       sendForm();
-      
     }
-
-  });                                   // End of event handler anon function
+  });             
   //  END: anonymous function triggered by the submit button
 
 
@@ -109,6 +131,21 @@
                                                     // 此元件的 type 是否有在檢測方法內
       return validateType[type](el);                // 若通過檢測方法會得到回傳的 true，再回傳 true
     } else {                                        
+      return true;
+    }
+  }
+
+  // 抓表單元件的 name 值來驗證輸入框，通過不為空值才會執行驗證
+  function validateNames(el) {
+    // if (!el.value) return false;                            // 欄位沒有值就傳 false 返回 (原始碼為true)
+    // Otherwise get the value from .data()
+    var name = $(el).data('name') || el.getAttribute('name');  // 擷取輸入框的 name
+    // 另外使用 getAttribute() 
+    // 則為若瀏覽器無法辨識 HTML5 的 DOM 特性，則會值街回傳text值
+    if (typeof validateType[name] === 'function') {            // validateType 為自訂物件，[type]為物件key值
+      // 此元件的 type 是否有在檢測方法內
+      return validateType[name](el);                           // 若通過檢測方法會得到回傳的 true，再回傳 true
+    } else {
       return true;
     }
   }
@@ -201,6 +238,57 @@
       }
       return valid;
     },
+    phone: function (el) {                             // 建立 手機號碼 檢測方法
+      var valid = /^[09]{2}[0-9]{8}$/.test(el.value);
+      // 正規標示法，通過檢測會得到 true
+      if (!valid) {                                    // 若 false 沒通過檢測，設定錯誤訊息
+        setErrorMessage(el, '請輸入有效的手機號碼');
+      }
+      return valid;
+    },
+    birthYear: function (el) {                         // 數字檢測方法
+      var valid = /^\d+$/.test(el.value);
+      if (!valid) {
+        setErrorMessage(el, '請選擇');
+      }
+      return valid;
+    },
+    birthMonth: function (el) {                       // 數字檢測方法
+      var valid = /^\d+$/.test(el.value);
+      if (!valid) {
+        setErrorMessage(el, '請選擇');
+      }
+      return valid;
+    },
+    birthDay: function (el) {                          // 數字檢測方法
+      var valid = /^\d+$/.test(el.value);
+      if (!valid) {
+        setErrorMessage(el, '請選擇');
+      }
+      return valid;
+    },
+    city: function (el) {     
+      if (el.value === '請選擇'){
+        var valid = false;
+      } else { 
+        var valid = true;
+      }
+      if (!valid) {
+        setErrorMessage(el, '請選擇');
+      }
+      return valid;
+    },
+    region: function (el) {
+      if (el.value === '請選擇') {
+        var valid = false;
+      } else {
+        var valid = true;
+      }
+      if (!valid) {
+        setErrorMessage(el, '請選擇');
+      }
+      return valid;
+    },
     date: function (el) {                                  // 建立日期檢測方法
       var valid = /^(\d{2}\/\d{2}\/\d{4})|(\d{4}-\d{2}-\d{2})$/.test(el.value);
       if (!valid) {                                        
@@ -281,35 +369,46 @@
   //   6. 撈到的資料格式為string，轉成object => JSON.parse()
   //   7. 信箱已註冊返回表單，註冊成功跳至會員中心
   // -------------------------------------------------------------------------
+  function goHref() {
+    var goHref = document.getElementById('btn-submit').dataset.href;
+    location.href = goHref;    // 跳轉至指定的 url 頁面
+  }
+
+
   function sendForm(){
-    var emailEl = document.getElementById('email');
-    var emailStr = emailEl.value;
-    var account = {};           // 儲存要傳送給伺服器的資料
-    account.email = emailStr;   // 資料使用 json 格式
-    
-    var xhr = new XMLHttpRequest();
-    xhr.open('post', 'https://www.thef2e.com/api/isSignUp', true); 
-    xhr.setRequestHeader('Content-type','application/json'); 
-    var data = JSON.stringify(account);
-    xhr.send(data);
-    loading();         // loading 動畫
+    if (document.getElementById('email')){
+      var emailEl = document.getElementById('email');
+      var emailStr = emailEl.value;
+      var account = {};           // 儲存要傳送給伺服器的資料
+      account.email = emailStr;   // 資料使用 json 格式
 
-    xhr.onload = function () {
-      removeLoading(); // 撈到資料，關閉 loading 動畫
+      var xhr = new XMLHttpRequest();
+      xhr.open('post', 'https://www.thef2e.com/api/isSignUp', true);
+      xhr.setRequestHeader('Content-type', 'application/json');
+      var data = JSON.stringify(account);
+      xhr.send(data);
+      loading();         // loading 動畫
 
-      var callbackData = JSON.parse(xhr.responseText);
-      var veriStr = callbackData.success;  // 此 Email 已報名過 => true
-      if (veriStr) {
-        setErrorMessage(emailEl, '此信箱已註冊');
-        showErrorMessage(emailEl);
-      } else {
-        removeErrorMessage(emailEl);
-        location.href = 'account.html';    // 跳轉至指定的 url 頁面
+      xhr.onload = function () {
+        removeLoading(); // 撈到資料，關閉 loading 動畫
+
+        var callbackData = JSON.parse(xhr.responseText);
+        var veriStr = callbackData.success;  // 此 Email 已報名過 => true
+        if (veriStr) {
+          setErrorMessage(emailEl, '此信箱已註冊');
+          showErrorMessage(emailEl);
+        } else {
+          removeErrorMessage(emailEl);
+          goHref();
+        }
       }
     }
+    if (document.getElementById('name')){
+      goHref();
+    }
   }
-  
 
+ 
 
   // -------------------------------------------------------------------------
   // Loding
@@ -323,86 +422,6 @@
     $('#loading').fadeOut();
     $('body').removeClass('overflow');
   }
-
-
-
-  // -------------------------------------------------------------------------
-  // 迴圈產生選單的 option 選項 (年月日)
-  // -------------------------------------------------------------------------  
-  var yearEl = document.getElementById('birth-year');
-  var monthEl = document.getElementById('birth-month');
-  var dayEl = document.getElementById('birth-day');
-  var countDown = true;
-
-  function optionItem(start, end, el, dateStr, countDown) {
-    var str = '';
-    var firstOption = `<option selected disabled="disabled">${dateStr}</option>`;
-    if (!countDown) {
-      for (var i = start; i < end + 1; i++) {
-        var option = `<option>${i}</option>`;
-        str += option;
-      }
-    } else {
-      for (var i = end; i > start - 1; i--) {  // 年份用遞減倒序
-        var option = `<option>${i}</option>`;
-        str += option;
-      }
-    }
-    el.innerHTML = firstOption + str;
-  }
-
-  optionItem(1, 31, dayEl, '日');
-  optionItem(1, 12, monthEl, '月');
-  optionItem(1900, 2018, yearEl, '西元年', countDown);
-
-
-
-  // ------------------------------------------------------------------------
-  // 縣市地區選單
-  // ------------------------------------------------------------------------
-  var cityEl = document.getElementById('city');
-  var regionEl = document.getElementById('region');
-  var cityData, regionData;
-  var cityIndex = new Number;
-
-  function cityOption(dataArray, el){
-    var str = '';
-    for (let i = 0; i<dataArray.length; i++){
-      var option = `<option>${dataArray[i]}</option>`;
-      str += option;
-    }
-    el.innerHTML = str;
-  }
-  
-
-  function regionOption(e){
-    // console.log(e.target.value);
-    for (let i = 0; i < cityData.length; i++){
-      // console.log(cityEl[i].value);
-      console.log(cityData);
-      console.log(e.target.value);
-      
-      
-    }
-  }
-
-
-  var xhrCity = new XMLHttpRequest();
-  xhrCity.open('get', '../city.json', true); //https://hsinny.github.io/06-Form_Validation/city.json
-  xhrCity.send('');
-  xhrCity.onload = function () {
-    var callbackData = JSON.parse(xhrCity.responseText);
-    cityData = callbackData.city;
-    regionData = callbackData.region;
-    cityOption(cityData, cityEl);
-    // console.log('1');
-  }
-  cityEl.addEventListener('change', regionOption, false);
-
-
-
-  
-
 
 
 }());  // End of IIFE

@@ -166,11 +166,12 @@ form
       +size(80px)
       display: block
       margin: 16px auto
-
   .form-control
     height: 48px
     margin-bottom: 4px 
     padding-left: 48px 
+    &::placeholder
+      color: $gray-500
     &.input-icon
       &.email
         // &[type=email]
@@ -209,6 +210,9 @@ form
 label
   margin-bottom: 0
 
+select.form-control:not([size]):not([multiple]) // 清除BS4預設
+  height: 48px
+
 .form-tip
   font-size: 14px
 
@@ -238,8 +242,10 @@ label
       width: 80%
     .form-control
       padding-left: 8px
+      margin-bottom: 0
     .btn
-      margin: 0 auto
+      // margin: 0 auto
+      margin: 16px
 
 .optional
   color: $pink
@@ -260,6 +266,13 @@ label
     // border-radius: 3px
     padding: 8px
     margin-top: 8px
+
+.form-customized
+  .error
+    &.message
+      padding: 0 8px
+      margin-top: 0px
+      margin-left: 20%
 
 
 

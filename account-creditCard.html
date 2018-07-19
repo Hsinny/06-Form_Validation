@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>基本資料 | 06 | Form Validation 表單驗證 | The F2E 前端修煉 精神時光屋</title>
+  <title>信用卡資料 | 06 | Form Validation 表單驗證 | The F2E 前端修煉 精神時光屋</title>
   <meta name="keywords" content="網頁設計, 前端, 工程師, F2E, UI, UX">
   <meta name="description" content="前網頁設計師，正走在往前端的路上，成為網站開發工程師">
   <!-- FB -->
@@ -96,68 +96,46 @@
           </div>
         </div>
         <div class="col-lg-9 bg-light">
-          <div class="section-header">基本資料</div>
+          <div class="section-header">信用卡資料</div>
           <div class="main">
             <form method="POST" name="register" autocomplete="off" id="form" class="form-customized">
-              <!-- method="POST" action="/index.html" -->
-              <!-- <div class="form-header">
-                          <img class="form-header-img" src="images/icon-user.svg" width="100" height="100" alt="">
-                          <h1 class="form-hetㄔader-title">註冊成功</h1>
-                          <p class="form-header-subtitle">
-                            <sapn id="">hsinny,</sapn>Welcome，請填寫個人資料</p>
-                        </div> -->
-                <div class="form-group row">
-                  <label for="name" class="required">姓名<sapn class="optional">*</sapn></label>
-                  <input type="text" class="form-control" name="name" id="name" placeholder="Hsinny Liu" required>
-                </div>
-                <div class="form-group row">
-                  <label for="phone" class="required">手機<sapn class="optional">*</sapn></label>
-                  <input type="number" class="form-control" name="phone" id="phone" placeholder="0900 000 000" required>
-                </div>
-                <div class="form-group row">
-                  <label for="birthYear" class="required">生日<sapn class="optional">*</sapn></label>
-                  <select id="birthYear" name="birthYear" class="form-control" required></select>
-                </div>
-                <div class="form-group row">
-                  <label for="birthMonth" class="required"></label>
-                  <select id="birthMonth" name="birthMonth" class="form-control" required></select>
-                </div>
-                <div class="form-group row">
-                  <label for="birthDay" class="required"></label>
-                  <select id="birthDay"name="birthDay" class="form-control" required></select>
-                </div>
-                <div class="form-group row">
-                  <label for="city" class="required">縣市<sapn class="optional">*</sapn></label>
-                  <select id="city" name="city" class="form-control" required></select>
-                </div>
-                <div class="form-group row">
-                  <label for="region" class="required">地區<sapn class="optional">*</sapn></label>
-                  <select id="region" name="region" class="form-control" required></select>
-                </div>
-                <div class="form-group row">
-                  <label for="address" class="required">地址</label>
-                  <input type="text" class="form-control" name="address" id="address">
-                </div>
-                <div class="form-group row justify-content-end">
-                  <button type="submit" class="btn btn-primary" id="btn-submit" data-href="account-creditCard.html">下一步</button>
-                </div>
+              <!-- action="/index.html" -->
+              <div class="form-group row">
+                <label for="cardNumber" class="required">信用卡號<sapn class="optional">*</sapn></label>
+                <input type="number" class="form-control" name="number" id="cardNumber" placeholder="1234 5678 9012 3456" required>
+              </div>
+              <div class="form-group row">
+                <label for="cardHolder" class="required">持有人姓氏<sapn class="optional">*</sapn></label>
+                <input type="text" class="form-control" name="cardHolder" id="cardHolder" required>
+              </div>
+              <div class="form-group row">
+                <label for="cardHolder" class="required">持有人名字<sapn class="optional">*</sapn></label>
+                <input type="text" class="form-control" name="cardHolder" id="cardHolder" required>
+              </div>
+              <div class="form-group row">
+                <label for="cvvNumber" class="required">背後三碼 CVV<sapn class="optional">*</sapn></label>
+                <input type="number" class="form-control" name="cvvNumber" id="cvvNumber" required>
+              </div>
+              <div class="form-group row">
+                <label for="expireMonth" class="required">有效日期<sapn class="optional">*</sapn></label>
+                <select id="expireMonth" name="expireMonth" class="form-control" required></select>
+              </div>
+              <div class="form-group row">
+                <label for="expireDay" class="required"></label>
+                <select id="expireDay" name="expireDay" class="form-control" required></select>
+              </div>
+              <div class="form-group row justify-content-end">
+                <button type="submit" class="btn btn-primary" id="btn-submit" data-href="account.html">完成</button>
+              </div>
             </form>
           </div>
         </div>
       </div>
     </div>
-    <!-- <section class="flex-1 account">
-      <div class="container">
-        <div class="row justify-content-center">
-          
-        </div>
-      </div>
-    </section> -->
   </main>
   <script src="js/jquery-3.3.1.min.js"></script>
   <script src="js/popper.min.js"></script>
   <script src="js/bootstrap.js"></script>
   <script src="js/form_validation.js"></script>
-  <script src="js/account-profile-page.js"></script>
 </body>
 </html>
