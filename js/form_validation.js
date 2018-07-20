@@ -8,82 +8,70 @@
 // Dependencies: jQuery, jQueryUI, birthday.js, styles.css
 
 (function () {
-  document.forms.register.noValidate = true; // 關閉 HTML5 預設的表單驗證
-  // -------------------------------------------------------------------------
-  //  A) 監聽事件觸發
-  // -------------------------------------------------------------------------
-  $('form').on('submit', function (e) {      // 當表單被送出
-    var elements = this.elements;            // form.elements => form 裡的所有表單控制元件集合
-    var isValid;                             // 檢測表單控制元件的驗證狀態
-    var valid = {};                          // 自訂驗證物件
-    var isFormValid;                         // 檢測整個表單
-    
-    // 對每一個表單控制元件執行"通用檢測"
-    for (let i = 0; i < (elements.length - 1); i++) {       // 迴圈 -1 為減掉 submit 按鈕元件
-      // validateRequired() 驗證欄位是否為必填 && validateTypes() 輸入的值是否有效
-      // isValid = validateRequired(elements[i]) && validateNames(elements[i]);
 
-      if (validateRequired(elements[i])) {
-        isValid = validateNames(elements[i]);
+  //  document.forms.register.noValidate = true; // 關閉 HTML5 預設的表單驗證
+  var formEl = document.querySelectorAll('form');
+  
+  for(let i=0; i<formEl.length; i++) {
+    formEl[i].addEventListener('submit', function(e){
+      var elements = this.elements;            // form.elements => form 裡的所有表單控制元件集合
+      var isValid;                             // 檢測表單控制元件的驗證狀態
+      var valid = {};                          // 自訂驗證物件
+      var isFormValid;                         // 檢測整個表單
+      // 對每一個表單控制元件執行"通用檢測"
+      for (let i = 0; i < (elements.length - 1); i++) {       // 迴圈 -1 為減掉 submit 按鈕元件
+        // validateRequired() 驗證欄位是否為必填 && validateTypes() 輸入的值是否有效
+        // isValid = validateRequired(elements[i]) && validateNames(elements[i]);
+
+        if (validateRequired(elements[i])) {
+          isValid = validateNames(elements[i]);
+        } else {
+          isValid = false ;
+        }
+        
+        if (!isValid) {                        // 如果元件未通過這兩種檢測
+          showErrorMessage(elements[i]);       // 顯示錯誤訊息
+        } else {                               // 否則
+          removeErrorMessage(elements[i]);     // 移除錯誤訊息
+        }
+        valid[elements[i].id] = isValid;        // 將元件加入至 valid 物件
+      }                                         // 迴圈結束
+
+
+      // 執行自訂驗證
+      // 若註冊表單存在，才執行
+      if (document.getElementById('form-join')){
+        if (formEl[i].id === 'form-join') {
+          // Comfirm password
+          if (!validateComfirmPassword(formEl[i])) {
+            showErrorMessage(document.getElementById('conf-password'));
+            valid.confPassword = false;
+          } else {
+            removeErrorMessage(document.getElementById('conf-password'));
+          }
+        }
       }
 
-      if (!isValid) {                        // 如果元件未通過這兩種檢測
-        showErrorMessage(elements[i]);       // 顯示錯誤訊息
-      } else {                               // 否則
-        removeErrorMessage(elements[i]);     // 移除錯誤訊息
-      }                                  
-      valid[elements[i].id] = isValid;        // 將元件加入至 valid 物件
-    }                                         // 迴圈結束
-    
-    // 執行自訂驗證
-    // password 元件存在，才執行
-    if (document.getElementById('password')) {
-      // Comfirm password
-      if (!validateComfirmPassword()) {
-        showErrorMessage(document.getElementById('conf-password'));
-        valid.confPassword = false;
+
+      // 是否通過檢測 / 可否送出表單？
+      // 迴圈巡訪 valid 物件，如果有任何錯誤，設定 isFormValid 為 false
+      for (var field in valid) {          // 檢測 valid 物件的特性
+        if (!valid[field]) {              // 如果特型值為無效
+          isFormValid = false;
+          break;                          // 發現有元件欄位錯誤，停止迴圈
+        }
+        isFormValid = true;               // 欄位皆正確，表單可以送出
+      }
+
+      // 如果表單未通過驗證，停止表單送出
+      if (!isFormValid) {
+        e.preventDefault();
       } else {
-        removeErrorMessage(document.getElementById('conf-password'));
+        e.preventDefault();
+        sendForm(formEl[i]);
       }
-    }
-    
-    // if (document.getElementById('phone')) {
-    //   if (!validateComfirmPhone()) {
-    //     showErrorMessage(document.getElementById('phone'));
-    //     valid.phone = false;
-    //   } else {
-    //     removeErrorMessage(document.getElementById('phone'));
-    //   }
-    // }
-
-    // 執行自訂驗證
-    // Comfirm password
-    // if (!validateComfirmPassword()) {
-    //   showErrorMessage(document.getElementById('conf-password'));
-    //   valid.confPassword = false;
-    // } else {
-    //   removeErrorMessage(document.getElementById('conf-password'));
-    // }
-
-
-    // 是否通過檢測 / 可否送出表單？
-    // 迴圈巡訪 valid 物件，如果有任何錯誤，設定 isFormValid 為 false
-    for (var field in valid) {          // 檢測 valid 物件的特性
-      if (!valid[field]) {              // 如果特型值為無效
-        isFormValid = false;            
-        break;                          // 發現有元件欄位錯誤，停止迴圈
-      }       
-      isFormValid = true;               // 欄位皆正確，表單可以送出
-    }
-
-    // 如果表單未通過驗證，停止表單送出
-    if (!isFormValid) {   
-      e.preventDefault();    
-    } else {
-      e.preventDefault();
-      sendForm();
-    }
-  });             
+    },false)
+  }
   //  END: anonymous function triggered by the submit button
 
 
@@ -156,15 +144,16 @@
 
   // Check passwords again 元件值與密碼相同
   function validateComfirmPassword() {
-    var password = document.getElementById('password');  
-    var confPassword = document.getElementById('conf-password');
+    
+    var password = document.getElementById('password-join');  
+    var confPassword = document.getElementById('conf-password-join');
+    
     var valid = (confPassword.value === password.value) && (confPassword.value.length >= 8) ; 
     if (!valid) {
-      
       if (confPassword.value.length < 1) {
         setErrorMessage(confPassword, '請輸入');
       } else if ((confPassword.value.length < 8) && (confPassword.value.length >= 1)) {
-        setErrorMessage(confPassword, '請輸入8碼數字英文 ( 至少包含一個大寫字母、一個小寫字母、一個數字 )');
+        setErrorMessage(confPassword, '請輸入8-12碼數字英文 ( 至少包含一個大寫字母、一個小寫字母、一個數字 )');
       } else {
         setErrorMessage(confPassword, '兩次輸入密碼不同');
       }
@@ -190,7 +179,7 @@
   }
   
   function getErrorMessage(el) {
-    return $(el).data('errorMessage') || el.title;       // Get error message or title of element
+    return $(el).data('errorMessage') || $(el).title;       // Get error message or title of element
   }
 
   // 欄位未通過檢測，顯示錯誤訊息
@@ -232,9 +221,16 @@
       return valid;                                   
     },
     password: function (el) {  
-      var valid = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,10}$/.test(el.value); // 限制：{8-10}字元，至少有一個數字/小寫英文字母/大寫英文字母               
+      var valid = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,12}$/.test(el.value); // 限制：{8-12}字元，至少有一個數字/小寫英文字母/大寫英文字母               
       if (!valid) {
-        setErrorMessage(el, '請輸入8碼數字英文 ( 至少包含一個大寫字母、一個小寫字母、一個數字 )');
+        setErrorMessage(el, '請輸入8-12碼數字英文 ( 至少包含一個大寫字母、一個小寫字母、一個數字 )');
+      }
+      return valid;
+    },
+    confPassword: function (el) {
+      var valid = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,12}$/.test(el.value); // 限制：{8-12}字元，至少有一個數字/小寫英文字母/大寫英文字母               
+      if (!valid) {
+        setErrorMessage(el, '請輸入8-12碼數字英文 ( 至少包含一個大寫字母、一個小寫字母、一個數字 )');
       }
       return valid;
     },
@@ -369,42 +365,53 @@
   //   6. 撈到的資料格式為string，轉成object => JSON.parse()
   //   7. 信箱已註冊返回表單，註冊成功跳至會員中心
   // -------------------------------------------------------------------------
-  function goHref() {
-    var goHref = document.getElementById('btn-submit').dataset.href;
+  function goHref(formEl) {
+    var goHref = formEl.dataset.href;
     location.href = goHref;    // 跳轉至指定的 url 頁面
   }
 
-
-  function sendForm(){
-    if (document.getElementById('email')){
-      var emailEl = document.getElementById('email');
-      var emailStr = emailEl.value;
-      var account = {};           // 儲存要傳送給伺服器的資料
-      account.email = emailStr;   // 資料使用 json 格式
+  function sendForm(formEl){
+    var $formEl = $(formEl);  // 轉成 jquery 元件
+    if (document.getElementById('email-login')){  // 有登入元件，表示在index.html
+      var $emailEl = $formEl.find('.email');
+      var $emailStr = $emailEl.val();
+      var account = {};            // 儲存要傳送給伺服器的資料
+      account.email = $emailStr;   // 資料使用 json 格式
 
       var xhr = new XMLHttpRequest();
       xhr.open('post', 'https://www.thef2e.com/api/isSignUp', true);
       xhr.setRequestHeader('Content-type', 'application/json');
       var data = JSON.stringify(account);
       xhr.send(data);
-      loading();         // loading 動畫
+      loading();                   // loading 動畫
 
       xhr.onload = function () {
-        removeLoading(); // 撈到資料，關閉 loading 動畫
+        removeLoading();           // 撈到資料，關閉 loading 動畫
 
         var callbackData = JSON.parse(xhr.responseText);
         var veriStr = callbackData.success;  // 此 Email 已報名過 => true
-        if (veriStr) {
-          setErrorMessage(emailEl, '此信箱已註冊');
-          showErrorMessage(emailEl);
-        } else {
-          removeErrorMessage(emailEl);
-          goHref();
+         
+        if (formEl.id === "form-join"){
+          if (veriStr) {
+            setErrorMessage($emailEl, '此信箱已註冊');
+            showErrorMessage($emailEl);
+          } else {
+            removeErrorMessage($emailEl);
+            goHref(formEl);
+          }
+        } else if (formEl.id === "form-login") {
+          if (veriStr) {
+            removeErrorMessage($emailEl);
+            goHref(formEl);
+          } else {
+            setErrorMessage($emailEl, '此信箱未註冊');
+            showErrorMessage($emailEl);
+          }
         }
-      }
-    }
-    if (document.getElementById('name')){
-      goHref();
+      } 
+    } else {
+      // 換頁前，我想要有1秒的loading()效果
+      goHref(formEl);
     }
   }
 

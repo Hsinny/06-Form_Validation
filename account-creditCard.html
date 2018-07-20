@@ -98,7 +98,7 @@
         <div class="col-lg-9 bg-light">
           <div class="section-header">信用卡資料</div>
           <div class="main">
-            <form method="POST" name="register" autocomplete="off" id="form" class="form-customized">
+            <form method="POST" name="register" autocomplete="off" id="form" class="form-customized" novalidate="novalidate" data-href="account.html">
               <!-- action="/index.html" -->
               <div class="form-group row">
                 <label for="cardNumber" class="required">信用卡號<sapn class="optional">*</sapn></label>
@@ -125,7 +125,7 @@
                 <select id="expireDay" name="expireDay" class="form-control" required></select>
               </div>
               <div class="form-group row justify-content-end">
-                <button type="submit" class="btn btn-primary" id="btn-submit" data-href="account.html">完成</button>
+                <button type="submit" class="btn btn-primary" id="btn-submit">完成</button>
               </div>
             </form>
           </div>
