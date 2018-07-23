@@ -73,31 +73,39 @@
               </div>
               <div class="account-body">
                 <div class="account-body-title">USER PROFILE</div>
-                <div class="account-body-item"><a href="#">作品列表</a></div>
-                <div class="account-body-item"><a href="#">基本資料</a></div>
-                <div class="account-body-item"><a href="#">信用卡</a></div>
+                <div class="account-body-item"><a href="account.html">作品列表</a></div>
+                <div class="account-body-item"><a href="account-profile.html">基本資料</a></div>
+                <div class="account-body-item"><a href="account-creditCard.html">信用卡</a></div>
               </div>
               <div class="account-body text-center">
-                <a href="#"><button type="buttion" class="btn btn-primary">編輯資料</button></a>
+                <a href="account-profile.html"><button type="buttion" class="btn btn-primary">編輯資料</button></a>
               </div>
             </div>
           </div>
-          <div class="col-lg-9">
+          <div class="col-lg-9 bg-light">
             <div class="section-header">作品列表</div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="d-flex flex-column" id="item"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    <!-- <section class="flex-1 account">
-      <div class="container">
-        <div class="row justify-content-center">
-          
-        </div>
-      </div>
-    </section> -->
   </main>
+  <!-- Loding -->
+  <div id="loading">
+    <div class="loding-wrap">
+      <div class="loading-icon"></div>
+    </div>
+  </div>
   <script src="js/jquery-3.3.1.min.js"></script>
   <script src="js/popper.min.js"></script>
   <script src="js/bootstrap.js"></script>
+  <script src="js/moment.js"></script>
+  <script>
+    moment().format();
+  </script>
   <script src="js/form_validation.js"></script>
 </body>
 </html>

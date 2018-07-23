@@ -8,6 +8,11 @@ $gray-blue: #979DBC
 .bg-light
   background-color: #F1F2F7
 
+.btn-center
+  width: 100%
+  display: block
+  margin: 32px auto 8px
+
 /*------------------------------------*/
 /* Layout   
 /*------------------------------------*/ 
@@ -20,10 +25,10 @@ section
 .section-header
   height: 70px
   line-height: 70px
-  letter-spacing: 1px
-  color: $gray-blue
+  +color($gray-blue, $white)
   font-size: 18px
   font-weight: 700
+  letter-spacing: 1px
   border:
     right: $border-gray
     bottom: $border-gray
@@ -145,9 +150,13 @@ section
 /* Login  
 /*------------------------------------*/
 .login
+  height: 100%
   background: no-repeat 
   // background-image: linear-gradient(to top, #4481eb 0%, #04befe 100%)
   background-image: linear-gradient(to top, #1e3c72 0%, #1e3c72 1%, #2a5298 100%)
+  display: flex
+  justify-content: center
+  align-self: center
 
 .nav-tabs-customized
   .nav-item
@@ -172,40 +181,37 @@ form
     padding-left: 48px 
     &::placeholder
       color: $gray-500
-    &.input-icon
+    &.form-controlState
+      &.error, &.ok 
+        background-repeat: no-repeat
+        background-size: 20px
+        background-position: center right 24px
+      &.error
+        border: 1px solid $danger
+        background-image: url(../images/icon-error.svg)
+      &.ok
+        background-image: url(../images/icon-check.svg)
+    &.input-icon  // 左邊一張icon
+      background-repeat: no-repeat
+      background-size: 20px
+      background-position: center left 16px
       &.email
-        // &[type=email]
         background-image: url(../images/icon-mail.svg)
-        background-repeat: no-repeat
-        background-size: 20px
-        background-position: center left 16px
         &.error
-          border: 1px solid $danger
           background-image: url(../images/icon-mail.svg), url(../images/icon-error.svg)
-          background-repeat: no-repeat, no-repeat
-          background-size: 20px, 20px
-          background-position: center left 16px, center right 8px
-      &.password
-        // &[type=password]
+        &.ok
+          background-image: url(../images/icon-mail.svg), url(../images/icon-check.svg)
+      &.password, &.conf-password
         background-image: url(../images/icon-lock.svg)
-        background-repeat: no-repeat
-        background-size: 20px
-        background-position: center left 16px
         &.error
-          border: 1px solid $danger
           background-image: url(../images/icon-lock.svg), url(../images/icon-error.svg)
-          background-repeat: no-repeat, no-repeat
-          background-size: 20px, 20px
-          background-position: center left 16px, center right 8px
-    // &.ok
-      // &:placeholder
-      // background-image: url(../images/icon-check.svg)
-      // background-repeat: no-repeat
-      // background-size: 20px
-      // background-position: center right 8px
-  // .btn
-  //   +size(100%, 48px)
-  //   display: block
+        &.ok
+          background-image: url(../images/icon-lock.svg), url(../images/icon-check.svg)
+      &.error, &.ok    // 左邊一張icon + 右邊錯誤icon
+        background-repeat: no-repeat, no-repeat
+        background-size: 20px, 20px
+        background-position: center left 16px, center right 24px
+      
 
 label
   margin-bottom: 0
@@ -232,17 +238,22 @@ select.form-control:not([size]):not([multiple]) // 清除BS4預設
     &.row
       margin: auto 0
     label
-      width: 20%
+      width: 18%
       color: $gray-700
       font-weight: 500
       line-height: 42px
     input, select
       border: 0
+      &.error
+        border: 1px solid $danger
     input, select
       width: 80%
     .form-control
       padding-left: 8px
       margin-bottom: 0
+      &.creditCard
+        width: 19%
+        display: inline-block
     .btn
       // margin: 0 auto
       margin: 16px
@@ -252,6 +263,9 @@ select.form-control:not([size]):not([multiple]) // 清除BS4預設
   vertical-align: super
   margin-left: 2px
     
+.dash
+  width: 2%
+  line-height: 48px
 
 /*------------------------------------*/
 /* Error  
@@ -285,6 +299,77 @@ select.form-control:not([size]):not([multiple]) // 清除BS4預設
 .main
   height: calc(100vh - 140px)
   // background-color: #F1F2F7
+
+
+.card.card-customized
+  display: flex
+  flex-direction: row
+  justify-content: space-between
+  align-items: center
+  border: $border-gray-light
+  border-left: 5px solid $primary
+  box-shadow: 1px 1px 5px 1px $gray-300
+  margin: 8px 32px
+  position: relative
+  &::before
+    content: '01'
+    +size(30px, 20px)
+    line-height: 20px
+    +color($white, $primary)
+    text-align: center
+    display: inline-block
+    position: absolute
+    top: -10px
+    right: 0
+  .card-img
+    width: 270px
+    padding: 16px
+    margin-right: 24px
+    img 
+      min-width: 270px
+      height: auto
+      margin-right: 24px
+      
+  .card-body
+    .card-title
+      color: $primary
+      font-weight: 700
+  .card-footer
+    width: 200px
+    background-color: $white
+    border:
+      top: 0
+      // left: $border-gray
+  .card-footer-img
+    +size(130px)
+    background-color: #F1F2F7
+    border-radius: 50%
+    position: relative
+    img 
+      +size(100px)
+      position: absolute
+      top: 50%
+      left: 50%
+      transform: translate(-50%, -50%)
+
+  
+.dl-customized
+  dt,dd 
+    display: inline-block
+  dt 
+    width: 130px
+    margin-bottom: 0.5rem
+  dd 
+    width: calc(100% - 200px - 4px)
+    
+  
+.badge-info
+  color: $primary
+  background-color: $blue-light
+  font-size: 13px
+  font-weight: 500
+  padding: 4px 8px
+
 
 /*------------------------------------*/
 /* Loding 

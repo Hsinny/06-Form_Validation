@@ -19,7 +19,9 @@
 <body>
   <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-      <a class="navbar-brand" href="#">THE F2E Challenge</a>
+      <a class="navbar-brand" href="index.html">
+        <img src="images/brand-logo-thef2e.svg" width="200" height="23">
+      </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
         aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -108,31 +110,31 @@
                         </div> -->
                 <div class="form-group row">
                   <label for="name" class="required">姓名<sapn class="optional">*</sapn></label>
-                  <input type="text" class="form-control" name="name" id="name" placeholder="Hsinny Liu" required>
+                  <input type="text" class="form-control form-controlState" name="name" id="name" placeholder="Hsinny Liu" required>
                 </div>
                 <div class="form-group row">
                   <label for="phone" class="required">手機<sapn class="optional">*</sapn></label>
-                  <input type="number" class="form-control" name="phone" id="phone" placeholder="0900 000 000" required>
+                  <input type="number" class="form-contro form-controlStatel" name="phone" id="phone" placeholder="0900 000 000" required>
                 </div>
                 <div class="form-group row">
                   <label for="birthYear" class="required">生日<sapn class="optional">*</sapn></label>
-                  <select id="birthYear" name="birthYear" class="form-control" required></select>
+                  <select id="birthYear" name="birthYear" class="form-control form-controlState" data-from="2018" data-to="1900" data-unit="西元年" required></select>
                 </div>
                 <div class="form-group row">
                   <label for="birthMonth" class="required"></label>
-                  <select id="birthMonth" name="birthMonth" class="form-control" required></select>
+                  <select id="birthMonth" name="birthMonth" data-from="1" data-to="12" class="form-control form-controlState" data-unit="月" required></select>
                 </div>
                 <div class="form-group row">
                   <label for="birthDay" class="required"></label>
-                  <select id="birthDay"name="birthDay" class="form-control" required></select>
+                  <select id="birthDay"name="birthDay" data-from="1" data-to="31" class="form-control form-controlState" data-unit="日" required></select>
                 </div>
                 <div class="form-group row">
                   <label for="city" class="required">縣市<sapn class="optional">*</sapn></label>
-                  <select id="city" name="city" class="form-control" required></select>
+                  <select id="city" name="city" class="form-control form-controlState" required></select>
                 </div>
                 <div class="form-group row">
                   <label for="region" class="required">地區<sapn class="optional">*</sapn></label>
-                  <select id="region" name="region" class="form-control" required></select>
+                  <select id="region" name="region" class="form-control form-controlState" required></select>
                 </div>
                 <div class="form-group row">
                   <label for="address" class="required">地址</label>
@@ -158,6 +160,5 @@
   <script src="js/popper.min.js"></script>
   <script src="js/bootstrap.js"></script>
   <script src="js/form_validation.js"></script>
-  <script src="js/account-profile-page.js"></script>
 </body>
 </html>

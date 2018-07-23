@@ -11,9 +11,8 @@
 
   //  document.forms.register.noValidate = true; // 關閉 HTML5 預設的表單驗證
   var formEl = document.querySelectorAll('form');
-  
-  for(let i=0; i<formEl.length; i++) {
-    formEl[i].addEventListener('submit', function(e){
+  for (let i = 0; i < formEl.length; i++) {
+    formEl[i].addEventListener('submit', function (e) {
       var elements = this.elements;            // form.elements => form 裡的所有表單控制元件集合
       var isValid;                             // 檢測表單控制元件的驗證狀態
       var valid = {};                          // 自訂驗證物件
@@ -26,9 +25,9 @@
         if (validateRequired(elements[i])) {
           isValid = validateNames(elements[i]);
         } else {
-          isValid = false ;
+          isValid = false;
         }
-        
+
         if (!isValid) {                        // 如果元件未通過這兩種檢測
           showErrorMessage(elements[i]);       // 顯示錯誤訊息
         } else {                               // 否則
@@ -40,14 +39,14 @@
 
       // 執行自訂驗證
       // 若註冊表單存在，才執行
-      if (document.getElementById('form-join')){
+      if (document.getElementById('form-join')) {
         if (formEl[i].id === 'form-join') {
           // Comfirm password
           if (!validateComfirmPassword(formEl[i])) {
-            showErrorMessage(document.getElementById('conf-password'));
+            showErrorMessage(document.getElementById('conf-password-join'));
             valid.confPassword = false;
           } else {
-            removeErrorMessage(document.getElementById('conf-password'));
+            removeErrorMessage(document.getElementById('conf-password-join'));
           }
         }
       }
@@ -70,7 +69,7 @@
         e.preventDefault();
         sendForm(formEl[i]);
       }
-    },false)
+    }, false)
   }
   //  END: anonymous function triggered by the submit button
 
@@ -144,7 +143,6 @@
 
   // Check passwords again 元件值與密碼相同
   function validateComfirmPassword() {
-    
     var password = document.getElementById('password-join');  
     var confPassword = document.getElementById('conf-password-join');
     
@@ -190,6 +188,7 @@
 
     if (!errorContainer.length) {   
       $el.addClass('error');
+      $el.removeClass('ok');
       // 建立<span>來保存錯誤，並加入到錯誤元件的後方
       errorContainer = $('<span class="error message"></span>').insertAfter($el);
     }
@@ -199,6 +198,8 @@
   function removeErrorMessage(el) {
     var errorContainer = $(el).siblings('.error.message'); // Get the sibling of this form control used to hold the error message
     $(el).removeClass('error');
+    $(el).removeClass('message');
+    $(el).addClass('ok');
     errorContainer.remove();                               // Remove the element that contains the error message
   }
 
@@ -285,6 +286,20 @@
       }
       return valid;
     },
+    cardNumber: function (el) {
+      var valid = /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6011[0-9]{12}|622((12[6-9]|1[3-9][0-9])|([2-8][0-9][0-9])|(9(([0-1][0-9])|(2[0-5]))))[0-9]{10}|64[4-9][0-9]{13}|65[0-9]{14}|3(?:0[0-5]|[68][0-9])[0-9]{11}|3[47][0-9]{13})*$/.test(el.value);                              // 信用卡號       
+      if (!valid) {
+        setErrorMessage(el, '請輸入有效卡號');
+      }
+      return valid;
+    },
+    cvvNumber: function (el) {
+      var valid = /^(\d){3}$/.test(el.value); // 3個數字             
+      if (!valid) {
+        setErrorMessage(el, '請輸入3位數字');
+      }
+      return valid;
+    },
     date: function (el) {                                  // 建立日期檢測方法
       var valid = /^(\d{2}\/\d{2}\/\d{4})|(\d{4}-\d{2}-\d{2})$/.test(el.value);
       if (!valid) {                                        
@@ -296,59 +311,45 @@
 
 
 
-
   // -------------------------------------------------------------------------
   // F) 離開輸入框，再次檢測欄位
   // -------------------------------------------------------------------------
-  // var email = document.getElementById('email'); // Store password inputs
-  // var password = document.getElementById('password'); // Store password inputs
-  // var passwordConfirm = document.getElementById('conf-password');
+  var storeEl = [];
 
+  for (let i = 0; i < formEl.length; i++) {
+    var elements = formEl[i].elements;  
 
-  // function emailOk(e){
-  //   var target = e.target || e.srcElement;
-  //   console.log('t');
-  //   if (validateTypes(target)){
-  //     target.classList.add('ok');                         // Set class to pass
-  //   } else {                   
-  //     console.log('error');                          // Otherwise
-  //     target.classList.add('error');                         // Set class to fail
-  //   } 
-  // }
+    for (let i = 0; i < elements.length; i++) {
+      storeEl.push(elements[i]);
+    }
+  }
 
-  // function setErrorHighlighter(e) {
-  //   var target = e.target || e.srcElement;             // Get target element
-  //   if (target.value.length < 8) {                     // If its length is < 8
-  //     target.classList.add('error');                       // Set class to fail
-  //   } else {                                           // Otherwise
-  //     target.classList.add('ok');                       // Set class to pass
-  //   }
-  // }
+  for (let i = 0; i < storeEl.length; i++){
+    // 所有 input 監聽，離開此元件焦點時觸發檢測
+    storeEl[i].addEventListener('blur', function () {
 
-  // function removeErrorHighlighter(e) {
-  //   var target = e.target || e.srcElement;              // Get target element
-  //   if (target.classList.contains('error')) {                  // If class shows fail
-  //     target.classList.remove('error');                            // Clear class
-  //   }
-  // }
+        if (validateRequired(storeEl[i])) {
+          isValid = validateNames(storeEl[i]);
+        } else {
+          isValid = false;
+        }
 
-  // function passwordsMatch(e) {
-  //   var target = e.target || e.srcElement;               // Get target element
-  //   // If value matches pwd and it is longer than 8 characters
-  //   if ((password.value === target.value) && target.value.length >= 8) {
-  //     target.classList.add('ok');                         // Set class to pass
-  //   } else {                                             // Otherwise
-  //     target.classList.add('error');                         // Set class to fail
-  //   }
-  // }
-  
-  // email.addEventListener('focus', removeErrorHighlighter, false);
-  // email.addEventListener('blur', emailOk, false);
-  // password.addEventListener('focus', removeErrorHighlighter, false);
-  // password.addEventListener('blur', setErrorHighlighter, false);
-  // passwordConfirm.addEventListener('focus', removeErrorHighlighter, false);
-  // passwordConfirm.addEventListener('blur', passwordsMatch, false);
-  // password.addEventListener('focus', removeErrorHighlighter, false);
+        if (!isValid) {     
+          showErrorMessage(storeEl[i]);       // 顯示錯誤訊息
+        } else {                               // 否則
+          removeErrorMessage(storeEl[i]);     // 移除錯誤訊息
+        }
+
+      if ((storeEl[i]) == document.getElementById('conf-password-join')) {
+        // Comfirm password
+        if (!validateComfirmPassword(storeEl[i])) {
+           showErrorMessage(document.getElementById('conf-password-join'));
+          } else {
+           removeErrorMessage(document.getElementById('conf-password-join'));
+          }
+        }
+      }, false);
+  }
 
 
 
@@ -370,12 +371,13 @@
     location.href = goHref;    // 跳轉至指定的 url 頁面
   }
 
+  var account = {};                // 儲存要傳送給伺服器的資料
+
   function sendForm(formEl){
-    var $formEl = $(formEl);  // 轉成 jquery 元件
+    var $formEl = $(formEl);       // 轉成 jquery 元件
     if (document.getElementById('email-login')){  // 有登入元件，表示在index.html
       var $emailEl = $formEl.find('.email');
       var $emailStr = $emailEl.val();
-      var account = {};            // 儲存要傳送給伺服器的資料
       account.email = $emailStr;   // 資料使用 json 格式
 
       var xhr = new XMLHttpRequest();
@@ -401,6 +403,7 @@
           }
         } else if (formEl.id === "form-login") {
           if (veriStr) {
+            localStorage.setItem('account', data);  // 紀錄登入帳號，存到localStorage
             removeErrorMessage($emailEl);
             goHref(formEl);
           } else {
@@ -415,7 +418,208 @@
     }
   }
 
+
+
+
+  // -------------------------------------------------------------------------
+  // 撈取登入帳號的作品資料
+  // -------------------------------------------------------------------------
+  if (window.location.pathname === '/account.html') {
+    
+    var accountGet = localStorage.getItem('account');
+  
+    var xhrAccount = new XMLHttpRequest();
+    xhrAccount.open('post', 'https://www.thef2e.com/api/stageCheck', true);
+    xhrAccount.setRequestHeader('Content-type', 'application/json');
+    xhrAccount.send(accountGet);
+    loading();
+
+    var items = document.getElementById('item')
+    var DOMstr = '';
  
+    xhrAccount.onload = function (){
+      removeLoading(); 
+
+      var callbackData = JSON.parse(xhrAccount.responseText);
+
+      /*===================================================================*/
+      /* 讀取 callbackData 的資料，生成 DOM 元件，更新網頁內容
+      /*===================================================================*/
+
+      if (callbackData.length == 0 ) {
+        alert('你尚未繳件');
+      } else {
+      }
+
+      for (let i = 0; i < callbackData.length; i++) {
+        addItemToDOM(callbackData[i], i);
+      }
+      items.innerHTML = DOMstr;
+    }
+  }
+
+
+  // stage 名稱 & 圖片
+  var itemObj = [
+    { name: 'Todo List',
+      img: 'stage-01.jpg'
+    },
+    {
+      name: 'Filter',
+      img: 'stage-02.jpg'
+    },
+    {
+      name: 'Admin Order',
+      img: 'stage-03.jpg'
+    },
+    {
+      name: 'Product Gallery',
+      img: 'stage-04.jpg'
+    },
+    {
+      name: 'Comic Viewer',
+      img: 'stage-05.jpg'
+    },
+    {
+      name: 'Form',
+      img: 'stage-06.jpg'
+    },
+    {
+      name: 'Game',
+      img: 'stage-01.jpg'
+    },
+    {
+      name: '尚未公布',
+      img: 'banner-01-thef2e.jpg'
+    },
+    {
+      name: '尚未公布',
+      img: 'banner-01-thef2e.jpg'
+    }
+  ]
+  
+
+  function addItemToDOM(item, j){
+
+    var tagGroup = item.tag; // string 分割
+    var tagArray = tagGroup.split(', ');
+    var itemTagStr = '';
+
+    for (let i = 0; i < tagArray.length; i++){
+      itemTagStr += `<span class="badge badge-info">${tagArray[i]}</span>`;
+    }
+
+    var stageTime = new Date(item.timeStamp);
+    var itemTimeStr = stageTime.getFullYear() + '/' + 
+                     (stageTime.getMonth()+1) + '/' + 
+                      stageTime.getDate() + ' ' +
+                      stageTime.getHours() + ':' +
+                      stageTime.getMinutes() + ':' +
+                      stageTime.getSeconds();
+
+    DOMstr = DOMstr +
+              `<div class="card card-customized">
+                <div class="card-img">
+                  <img class="card-img-aside" src="images/${itemObj[j].img}" weight="400" height="230" alt="">
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">${itemObj[j].name}</h5>
+                  <dl class="card-text dl-customized">
+                    <dt>繳件時間：</dt>
+                    <dd class="item-date">${itemTimeStr}</dd>
+                    <dt>作品網址：</dt>
+                    <dd><a class="item-link" href="${item.url}" target="_blank">${item.url}</a></dd>
+                    <dt>挑戰技術：</dt>
+                    <dd class="item-pill">${itemTagStr}</dd>
+                  </dl>
+                </div>
+                <div class="card-footer text-muted">
+                  <div class="card-footer-img"><img class="" src="images/icon-trophy.svg" alt=""></div>
+                </div>
+              </div>`;
+  }
+
+  // -------------------------------------------------------------------------
+  // 迴圈產生選單的 option 選項 (年月日)
+  // -------------------------------------------------------------------------
+  function optionItem(el) {
+    var str = '';
+    var from = parseInt(el.dataset.from);  // data-*屬性取出的值，型態為字串，做數字運算會出錯，需轉型
+    var to = parseInt(el.dataset.to);
+    var unit = (el.dataset.unit);
+    var firstOption = `<option selected disabled="disabled">${unit}</option>`;
+
+    if (from < to) {
+      for (var i = from; i < to + 1; i++) {
+        var option = `<option>${i}</option>`;
+        str += option;
+      }
+    } else {
+      for (var i = from; i > to - 1; i--) {
+        var option = `<option>${i}</option>`;
+        str += option;
+      }
+    }
+    el.innerHTML = firstOption + str;
+  }
+
+  if (document.querySelector('select')) {      // 頁面中有 <select> 元件才往下執行
+    var selectEls = document.querySelectorAll('select');
+    for (let i = 0; i < selectEls.length; i++) {
+      if (selectEls[i].dataset.from) {         // 判斷 <select> 有無data-from
+        optionItem(selectEls[i]);
+      }
+    }
+  }
+
+
+
+  // ------------------------------------------------------------------------
+  // 縣市地區選單
+  // ------------------------------------------------------------------------
+ 
+  // 縣市選單
+  function cityOption(dataArray, el) {
+    var str = '';
+    var firstOption = `<option selected disabled="disabled" style="color:red;">請選擇</option>`;
+    for (let i = 0; i < dataArray.length; i++) {
+      var option = `<option>${dataArray[i]}</option>`;
+      str += option;
+    }
+    el.innerHTML = firstOption + str;
+  }
+
+  // 地區選單：找出選取到的縣市索引值，再帶出第幾筆陣列
+  function regionOption(e) {
+    for (let i = 0; i < cityData.length; i++) {
+      if (e.target.value === cityData[i]) {
+        var cityIndex = i;
+        break;
+      }
+    }
+    cityOption(regionData[cityIndex], regionEl);
+  }
+
+  // 有<select id="city">才執行
+  if (document.getElementById('city')) {
+    var cityEl = document.getElementById('city');
+    var regionEl = document.getElementById('region');
+    var cityData, regionData;    // 用來存放 json 內的縣市、地區資料
+
+    var xhrCity = new XMLHttpRequest();
+    xhrCity.open('get', '../city.json', true); //https://hsinny.github.io/06-Form_Validation/city.json
+    xhrCity.send('');
+    xhrCity.onload = function () {
+      var callbackData = JSON.parse(xhrCity.responseText);
+      cityData = callbackData.city;
+      regionData = callbackData.region;
+      cityOption(cityData, cityEl);
+    }
+
+    cityEl.addEventListener('change', regionOption, false);
+  }
+
+
 
   // -------------------------------------------------------------------------
   // Loding
