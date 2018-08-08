@@ -13,91 +13,74 @@
   <meta property="og:description" content="The F2E 前端修煉精神時光屋 第六題 Form Validation 表單驗證">
   <meta property="og:url" content="https://github.com/Hsinny">
   <link rel="icon" type="ico" href="images/favicon.ico">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css">
   <link rel="stylesheet" href="css/style-all.css">
 </head>
 <body>
   <header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-      <a class="navbar-brand" href="#">THE F2E Challenge</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-        aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse flex-row-reverse" id="navbarSupportedContent">
-        <ul class="navbar-nav">
-          <li class="nav-item active">
-            <a class="nav-link" href="index.html">
-              <!-- Button trigger modal -->
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                登出
-              </button>
-            </a>
-          </li>
-        </ul>
-      </div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+      <a class="navbar-brand mr-auto" href="index.html">
+        <img src="images/brand-logo-thef2e.svg" width="200" height="23">
+      </a>
+      <a class="nav-link" href="index.html">
+        <button type="button" class="btn btn-info btn-sm" id="btn-logout">登出</button>
+      </a>
     </nav>
   </header>
   <main>
     <div class="container-wide">
       <div class="row no-gutters">
-        <div class="col-lg-3">
+        <div class="col-md-12 col-lg-3 col-xl-3 account-border">
           <div class="section-header text-center">使用者</div>
-          <div class="account">
+          <div class="account clearfix">
             <div class="account-body">
-              <div class="account-body-img">
-                <img src="images/account-img.png" width="160" height="160" alt="">
-                <a href="#" class="icon-edit">
-                  <button type="button" class="btn-circle">
-                    <img src="images/icon-edit.svg" alt="">
-                  </button>
-                </a>
-              </div>
-              <div class="account-body-name" id="account-nickName">Hsinny Liu</div>
-              <div class="account-body-email" id="account-email">somebody@gmail.com</div>
+              <!-- 大頭照 -->
+              <img id="account-photo" class="account-body-img" src="images/user-photo.png" width="160" height="160" alt="">
+              <!-- Photo Edit input-->
+              <label class="btn-file">
+                <img src="images/icon-edit.svg" width="20" height="20" alt="">
+                <!--上傳照片-->
+                <input type="file" name="Photos" accept="image/*" multiple id="input-photo">
+              </label>
+              <div class="account-body-name" id="account-nickName">&nbsp;</div>
+              <div class="account-body-email" id="account-email">&nbsp;</div>
               <div class="account-body-progress clearfix">
                 <div class="progress">
-                  <div class="progress-bar" role="progressbar" style="width: 60%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">60%</div>
-                </div>
-                <div class="account-body-progress-txt">
-                  <div class="number">6</div>
-                  <div class="title">完成</div>
-                  <div class="subtitle">stages</div>
-                </div>
-                <div class="account-body-progress-txt">
-                  <div class="number">3</div>
-                  <div class="title">未完成</div>
-                  <div class="subtitle">stages</div>
+                  <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%</div>
                 </div>
                 <div class="account-body-progress-txt">
                   <div class="number">9</div>
                   <div class="title">全部</div>
                   <div class="subtitle">stages</div>
                 </div>
+                <div class="account-body-progress-txt">
+                  <div class="number text-primary" id="completedCount">&nbsp;</div>
+                  <div class="title text-primary">完成</div>
+                  <div class="subtitle text-primary">stages</div>
+                </div>
+                <div class="account-body-progress-txt">
+                  <div class="number text-primary" id="todoCount">&nbsp;</div>
+                  <div class="title text-primary">未完成</div>
+                  <div class="subtitle text-primary">stages</div>
+                </div>
               </div>
             </div>
             <div class="account-body">
               <div class="account-body-title">USER PROFILE</div>
               <div class="account-body-item">
-                <a href="#">作品列表</a>
+                <a href="account.html">作品列表</a>
               </div>
               <div class="account-body-item">
-                <a href="#">基本資料</a>
+                <a href="account-profile.html">基本資料</a>
               </div>
               <div class="account-body-item">
-                <a href="#">信用卡</a>
+                <a href="account-creditCard.html">信用卡</a>
               </div>
-            </div>
-            <div class="account-body text-center">
-              <a href="#">
-                <button type="buttion" class="btn btn-primary">編輯資料</button>
-              </a>
             </div>
           </div>
         </div>
-        <div class="col-lg-9 bg-light">
+        <div class="col-md-12 col-lg-9 col-xl-9">
           <div class="section-header">信用卡資料</div>
-          <div class="main">
+          <div class="editWrap">
             <form method="POST" name="register" autocomplete="off" id="form" class="form-customized" novalidate="novalidate" data-href="account.html">
               <!-- action="/index.html" -->
               <div class="form-group row">
@@ -121,6 +104,7 @@
                 <select id="expireMonth" name="expireMonth" class="form-control form-controlState" data-from="1" data-to="12" data-unit="月" required></select>
               </div>
               <div class="form-group row justify-content-end">
+                <a href="account-profile.html"><button type="button" class="btn btn-info">上一步</button></a>
                 <button type="submit" class="btn btn-primary" id="btn-submit">完成</button>
               </div>
             </form>

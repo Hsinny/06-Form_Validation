@@ -1,31 +1,16 @@
-// *
-//   outline: 1px solid $gray-500
-
-$height: 70px
-$border-gray: 1px solid $gray-400
-$border-gray-light: 1px solid $gray-200
-$gray-blue: #979DBC
-.bg-light
-  background-color: #F1F2F7
-
-.btn-center
-  width: 100%
-  display: block
-  margin: 32px auto 8px
-
 /*------------------------------------*/
 /* Layout   
 /*------------------------------------*/ 
 main 
-  height: calc(100vh - 71px)
+  height: calc(100vh - 80px)
 
 section 
   width: 100%
   
 .section-header
-  height: 70px
-  line-height: 70px
-  +color($gray-blue, $white)
+  height: 80px
+  line-height: 80px
+  +color($success, $white)
   font-size: 18px
   font-weight: 700
   letter-spacing: 1px
@@ -34,13 +19,44 @@ section
     bottom: $border-gray
   padding: 0 32px
 
+@media (max-width: 1199px)
+  .section-header
+    height: 60px
+    line-height: 60px
+    text-align: center
+
 
 /*------------------------------------*/
-/* Account   
+/* Login  
+/*------------------------------------*/
+.login
+  background-image: linear-gradient(to top, $primary 0%, $success 100%)
+  display: flex
+  justify-content: center
+  align-self: center
+  .card
+    max-width: 480px
+    margin: 100px auto 
+
+.nav-tabs-customized
+  .nav-item
+    width: 50%
+    text-align: center
+    
+@media (max-width: 639px)
+  .login
+    .card
+      margin: 24px auto 48px
+    .form-header-title
+      font-size: 1.5rem
+
+
+/*------------------------------------*/
+/* Account Section 
 /*------------------------------------*/ 
 .account
-  height: calc(100vh - 140px)
-  border-right: $border-gray
+  position: sticky
+  top: 0
 
 .account-body
   letter-spacing: 1px
@@ -48,44 +64,37 @@ section
   padding: 40px
   &:last-child
     border-bottom: 0
-  &> div:last-child
-    margin-bottom: 0
 
+// 大頭照
 .account-body-img
   +size(160px)
+  background-color: #F1F2F7
   border-radius: 50%
+  overflow: hidden
   display: block
   margin: 0 auto 32px
   position: relative
-  // &:after
-  //   content: url('../images/icon-edit.svg')
-  //   +size(16px)
-  //   line-height: 16px
-  //   background-color: $primary
-  //   border-radius: 50%
-  //   display: inline-block
-  //   box-sizing: initial
-  //   padding: 8px
-  //   position: absolute
-  //   bottom: 0 
-  //   right: 8px
 
-.btn-circle
+// 編輯上傳按鈕
+.btn-file
   +size(32px)
-  background-color: $primary
+  background-color: $success
   border-radius: 50%
   padding: 8px
-  // display: inline-block
-  // box-sizing: initial
-  // padding: 8px
-  // position: absolute
-  // bottom: 0 
-  // right: 8px
+  margin-top: -120px
+  position: relative
+  left: 60%
+  img 
+    margin: 
+      top: -13px
+      left: 2px &
 
-.icon-edit
+input[type=file]
+  +size(100%)
   position: absolute
-  bottom: 0 
-  right: 8px
+  top: 0
+  left: 0
+  opacity: 0
 
 .account-body-name
   color: $black
@@ -126,7 +135,7 @@ section
   .progress
     margin-bottom: 40px
   .progress-bar
-    //
+    background-color: $success
 
 .account-body-progress-txt
   width: 33.3%
@@ -147,21 +156,222 @@ section
 
 
 /*------------------------------------*/
-/* Login  
-/*------------------------------------*/
-.login
-  height: 100%
-  background: no-repeat 
-  // background-image: linear-gradient(to top, #4481eb 0%, #04befe 100%)
-  background-image: linear-gradient(to top, #1e3c72 0%, #1e3c72 1%, #2a5298 100%)
-  display: flex
-  justify-content: center
-  align-self: center
+/* Account Page  
+/*------------------------------------*/ 
+.account-border
+  border-right: $border-gray
+  
+.itemWrap, .editWrap
+  background-color: $gray-100
+  padding: 24px
 
-.nav-tabs-customized
-  .nav-item
-    width: 50%
+.editWrap
+  height: calc(100vh - 140px)
+
+.itemWrap
+  display: flex 
+  flex-direction: column
+
+.card.card-customized
+  flex-direction: row
+  align-items: center
+  background-color: $white
+  border: none
+  box-shadow: 1px 1px 5px 1px $gray-300
+  margin: 8px 32px
+  position: relative
+  .card-img
+    width: 340px
+    min-width: 340px
+    margin-right: 24px
+    img 
+      width: 340px
+      height: 200px
+      margin-right: 24px
+  .card-body
+    .card-title
+      color: $primary
+      font-weight: 700
+      margin-bottom: 1.5rem
+  .card-footer
+    background-color: transparent
+    border:
+      top: 0
+  .card-footer-img
+    +size(130px)
+    background-color: #F1F2F7
+    border-radius: 50%
+    position: relative
+    img 
+      +size(100px)
+      position: absolute
+      top: 50%
+      left: 50%
+      transform: translate(-50%, -47%)
+  .stageNum
+    +size(20px)
+    line-height: 20px
+    +color($white, $primary)
     text-align: center
+    display: inline-block
+    position: absolute
+    top: 0px
+    right: 0px
+  
+.dl-customized
+  dt,dd 
+    display: inline-block
+    vertical-align: top
+  dt 
+    width: 100px
+    color: $gray-600
+    font-weight: 400
+    margin-bottom: 0.5rem
+  dd 
+    width: calc(100% - 100px - 4px)
+  
+.badge-info
+  color: $primary
+  background-color: $blue-light
+  font-size: 13px
+  font-weight: 500
+  padding: 4px 8px
+
+@media (max-width: 1439px)
+  .card.card-customized
+    .card-img
+      width: 200px
+      min-width: 200px
+      margin-right: 0px
+      img
+        width: 200px
+        height: auto
+    .card-body
+      .card-title
+        margin-bottom: 0.3rem
+    .card-footer-img
+      +size(80px)
+      img 
+        +size(60px)
+  .dl-customized
+    dt 
+      width: 80px
+    dt,dd 
+      margin-bottom: 0
+
+@media (max-width: 1199px)
+  .editWrap 
+    height: 100%
+  .editForm
+    height: 100%
+  .card.card-customized
+    margin: 8px 16px 
+    &:first-child
+      margin-top: 0
+    .card-img
+      width: 340px
+      min-width: 340px
+      margin-right: 0px
+      img
+        width: 340px
+        height: auto
+    .card-body
+      .card-title
+        margin-bottom: 1rem
+    .card-footer-img
+      +size(80px)
+      img 
+        +size(60px)
+  .dl-customized
+    dt 
+      width: 80px
+    dt,dd 
+      margin-bottom: 0.5rem
+  .account
+    height: auto
+    border-bottom: $border-gray
+    .account-body
+      width: 50%
+      float: left
+      &:first-child
+        border:
+          right: $border-gray
+          bottom: 0
+
+@media (max-width: 991px)
+  .card.card-customized
+    .card-img
+      width: 200px
+      min-width: 200px
+      margin-right: 0px
+      img
+        width: 200px
+    .card-body
+      .card-title
+        margin-bottom: 0.3rem
+
+  .dl-customized
+    dt,dd 
+      margin-bottom: 0
+
+@media (max-width: 767px)
+  .editWrap, .itemWrap
+    padding: 24px
+
+  .itemWrap
+    flex-direction: row
+    flex-wrap: wrap
+   
+  .card.card-customized
+    width: calc(50% - 16px)
+    background-color: $white
+    flex-direction: column
+    border: $border-gray-light
+    border-bottom: 3px solid $primary
+    margin: 12px 8px
+    &:first-child
+      margin-top: 12px
+    .card-img
+      width: 100%
+      img
+        width: 100%
+    .card-body
+      width: 100%
+      order: 2
+      padding: 0 1.25rem 1.25rem
+      .card-title
+        margin-bottom: 1rem
+    .card-footer
+      order: 1
+      padding: 1.25rem 
+    
+  .dl-customized
+    dt,dd
+      width: 100%
+      display: block 
+    dt 
+      margin-bottom: 0
+    dd 
+      margin-bottom: 12px
+
+@media (max-width: 639px)
+  .card.card-customized
+    .card-footer
+      top: 330px
+
+@media (max-width: 575px)
+  .account
+    .account-body
+      width: 100%
+      display: block
+      padding: 24px 40px
+  .account-body-progress
+    margin-bottom: 0
+      
+  .card.card-customized
+    width: 100%
+    &:first-child
+      margin-top: 0px
 
 
 /*------------------------------------*/
@@ -211,7 +421,6 @@ form
         background-repeat: no-repeat, no-repeat
         background-size: 20px, 20px
         background-position: center left 16px, center right 24px
-      
 
 label
   margin-bottom: 0
@@ -255,7 +464,6 @@ select.form-control:not([size]):not([multiple]) // 清除BS4預設
         width: 19%
         display: inline-block
     .btn
-      // margin: 0 auto
       margin: 16px
 
 .optional
@@ -267,17 +475,44 @@ select.form-control:not([size]):not([multiple]) // 清除BS4預設
   width: 2%
   line-height: 48px
 
+@media (max-width: 1199px)
+  .form-customized
+    margin: 0 auto
+
+@media (max-width: 767px)
+  .form-customized
+    .form-group
+      padding: 8px 16px
+      input, select
+        width: calc(100% - 120px)
+      label
+        width: 110px
+      .error.message 
+        margin-left: 110px
+
+@media (max-width: 639px)
+  .form-customized
+    .form-group
+      &.row
+        flex-direction: column
+      input, select
+        width: 100%
+      label
+        font-size: 14px
+        line-height: 24px
+      .error.message 
+        margin-left: 0px
+
+
 /*------------------------------------*/
 /* Error  
 /*------------------------------------*/ 
 .error
   &.message
-    // +color($white, $warning)
     +color($danger, transparent)
     font-size: 13px
     font-weight: 400
     letter-spacing: 1px
-    // border-radius: 3px
     padding: 8px
     margin-top: 8px
 
@@ -286,89 +521,21 @@ select.form-control:not([size]):not([multiple]) // 清除BS4預設
     &.message
       padding: 0 8px
       margin-top: 0px
-      margin-left: 20%
-
+      margin-left: 18%
 
 
 /*------------------------------------*/
-/* Account Page  
+/* Other Set
 /*------------------------------------*/ 
-.account
-  // border-top: 5px solid $primary
-
-.main
-  height: calc(100vh - 140px)
-  // background-color: #F1F2F7
-
-
-.card.card-customized
-  display: flex
-  flex-direction: row
-  justify-content: space-between
-  align-items: center
-  border: $border-gray-light
-  border-left: 5px solid $primary
-  box-shadow: 1px 1px 5px 1px $gray-300
-  margin: 8px 32px
-  position: relative
-  &::before
-    content: '01'
-    +size(30px, 20px)
-    line-height: 20px
-    +color($white, $primary)
-    text-align: center
-    display: inline-block
-    position: absolute
-    top: -10px
-    right: 0
-  .card-img
-    width: 270px
-    padding: 16px
-    margin-right: 24px
-    img 
-      min-width: 270px
-      height: auto
-      margin-right: 24px
-      
-  .card-body
-    .card-title
-      color: $primary
-      font-weight: 700
-  .card-footer
-    width: 200px
-    background-color: $white
-    border:
-      top: 0
-      // left: $border-gray
-  .card-footer-img
-    +size(130px)
-    background-color: #F1F2F7
-    border-radius: 50%
-    position: relative
-    img 
-      +size(100px)
-      position: absolute
-      top: 50%
-      left: 50%
-      transform: translate(-50%, -50%)
-
-  
-.dl-customized
-  dt,dd 
-    display: inline-block
-  dt 
-    width: 130px
-    margin-bottom: 0.5rem
-  dd 
-    width: calc(100% - 200px - 4px)
-    
-  
-.badge-info
+.btn-info
   color: $primary
-  background-color: $blue-light
-  font-size: 13px
-  font-weight: 500
-  padding: 4px 8px
+  &:hover
+    color: $primary
+
+.btn-center
+  width: 100%
+  display: block
+  margin: 32px auto 8px
 
 
 /*------------------------------------*/

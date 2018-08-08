@@ -13,36 +13,20 @@
   <meta property="og:description" content="The F2E 前端修煉精神時光屋 第六題 Form Validation 表單驗證">
   <meta property="og:url" content="https://github.com/Hsinny">
   <link rel="icon" type="ico" href="images/favicon.ico">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css">
   <link rel="stylesheet" href="css/style-all.css">
 </head>
 <body>
   <header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary justify-content-center">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
       <a class="navbar-brand" href="index.html">
-        <img src="images/brand-logo-thef2e.svg" width="200" height="23"></a> <!--<span class="navbar-brand-txt">Challenge</span>-->
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-        aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <!-- <div class="collapse navbar-collapse flex-row-reverse" id="navbarSupportedContent">
-        <ul class="navbar-nav">
-          <li class="nav-item active">
-            <a class="nav-link" href="index.html">
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                登入
-              </button>
-            </a>
-          </li>
-        </ul>
-      </div> -->
+        <img src="images/brand-logo-thef2e.svg" width="200" height="23"></a> 
     </nav>
   </header>
   <main>
-    <section class="login flex-1">
+    <section class="login h-100">
       <div class="container">
-        <div class="row justify-content-center align-items-center h-75">
-          <div class="col-lg-6">
+        <div class="row justify-content-center h-100">
+          <div class="col-12">
             <!-- Login -->
             <div class="card">
               <div class="card-body pt-4">
@@ -77,9 +61,7 @@
                   </div>
                   <div class="tab-pane fade" id="join" role="tabpanel" aria-labelledby="join">
                     <!-- form -->
-                    <!-- autocomplete="off" 關閉瀏覽器表單自動填入功能-->
                     <form method="post" name="register" id="form-join" autocomplete="off" novalidate="novalidate" data-href="account.html">
-                      <!--method="post" action="index.html"-->
                       <div class="form-header">
                         <img class="form-header-img" src="images/icon-mail-join.svg" width="100" height="100" alt="">
                         <h1 class="form-header-title">申請帳號</h1>
@@ -101,27 +83,6 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section>
-      <!-- Modal -->
-      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              ...
-            </div>
-            <!-- <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
-            </div> -->
           </div>
         </div>
       </div>

@@ -39,12 +39,12 @@ $blue-light: #BEE1FF;
 $indigo:  #6610f2 !default;
 $purple:  #EAEDFC !default;
 $pink:    #FF537B !default;
-$red:     #dc3545 !default;
+$red:     #f71644 !default;
 $orange:  #F5A623 !default;
 $yellow:  #ffc107 !default;
 $green:   #2fd566 !default;
 $teal:    #20c997 !default;
-$cyan:    #17a2b8 !default;
+$cyan:    #1c1364 !default;
 
 $colors: () !default;
 $colors: map-merge((
@@ -65,11 +65,11 @@ $colors: map-merge((
 
 $primary:       $blue !default;
 $secondary:     $gray-600 !default;
-$success:       $green !default;
+$success:       $cyan !default;
 $info:          $purple !default;
 $warning:       $orange !default;
 $danger:        $red !default;
-$light:         $gray-100 !default;
+$light:         $gray-200 !default;
 $dark:          $gray-800 !default;
 
 $theme-colors: () !default;
@@ -170,8 +170,8 @@ $grid-breakpoints: (
   xs: 0,
   sm: 576px,
   md: 768px,
-  lg: 992px,
-  xl: 1200px
+  lg: 1200px,  //ori 992px
+  xl: 1440px  // ori 1200px
 ) !default;
 
 @include _assert-ascending($grid-breakpoints, "$grid-breakpoints");
@@ -185,8 +185,8 @@ $grid-breakpoints: (
 $container-max-widths: (
   sm: 540px,
   md: 720px,
-  lg: 960px,
-  xl: 1140px
+  lg: 1020px,  // ori 960px
+  xl: 1400px   // ori 1140px
 ) !default;
 
 @include _assert-ascending($container-max-widths, "$container-max-widths");
@@ -340,7 +340,7 @@ $input-btn-focus-color:       rgba($component-active-bg, .25) !default;
 $input-btn-focus-box-shadow:  0 0 0 $input-btn-focus-width $input-btn-focus-color !default;
 
 $input-btn-padding-y-sm:      .25rem !default;
-$input-btn-padding-x-sm:      .5rem !default;
+$input-btn-padding-x-sm:      .75rem !default;
 $input-btn-line-height-sm:    $line-height-sm !default;
 
 $input-btn-padding-y-lg:      .5rem !default;

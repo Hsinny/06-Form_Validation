@@ -2,15 +2,23 @@
 /* Header 
 /*------------------------------------*/  
 .navbar 
+  height: 80px
   border-bottom: 1px solid $gray-300 
 
 .navbar-brand
   margin-top: 8px
   img 
     width: 200px
-    vertical-align: top
+    vertical-align: baseline
 
 .navbar-brand-txt
   display: inline-block
   transform: skewx(-20deg)
   letter-spacing: 1px
+
+@media (max-width: 639px)
+  .navbar 
+    height: 60px
+  .navbar-brand
+    img 
+      width: 150px

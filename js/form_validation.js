@@ -1,15 +1,5 @@
-// JavaScript validation of subscription form.
-// A. Anonymous function triggered by submit event 
-// B. Functions called to perform generic checks by anon function in section A
-// C. Functions called to perform generic checks by anon function in section A
-// D. Functions to get / set / show / remove error messages
-// E. Object to check type of data using RegEx called by validateTypes in section B
-
-// Dependencies: jQuery, jQueryUI, birthday.js, styles.css
-
 (function () {
 
-  //  document.forms.register.noValidate = true; // 關閉 HTML5 預設的表單驗證
   var formEl = document.querySelectorAll('form');
   for (let i = 0; i < formEl.length; i++) {
     formEl[i].addEventListener('submit', function (e) {
@@ -20,8 +10,6 @@
       // 對每一個表單控制元件執行"通用檢測"
       for (let i = 0; i < (elements.length - 1); i++) {       // 迴圈 -1 為減掉 submit 按鈕元件
         // validateRequired() 驗證欄位是否為必填 && validateTypes() 輸入的值是否有效
-        // isValid = validateRequired(elements[i]) && validateNames(elements[i]);
-
         if (validateRequired(elements[i])) {
           isValid = validateNames(elements[i]);
         } else {
@@ -36,7 +24,6 @@
         valid[elements[i].id] = isValid;        // 將元件加入至 valid 物件
       }                                         // 迴圈結束
 
-
       // 執行自訂驗證
       // 若註冊表單存在，才執行
       if (document.getElementById('form-join')) {
@@ -50,7 +37,6 @@
           }
         }
       }
-
 
       // 是否通過檢測 / 可否送出表單？
       // 迴圈巡訪 valid 物件，如果有任何錯誤，設定 isFormValid 為 false
@@ -71,7 +57,6 @@
       }
     }, false)
   }
-  //  END: anonymous function triggered by the submit button
 
 
   // -------------------------------------------------------------------------
@@ -90,7 +75,7 @@
       }
       return valid;                                 // 回傳 valid 變數 (true or false)?
     }
-    return true;                                    // 如果欄位為設為必填，回傳 true
+    return true;                                    // 如果欄位非必填，回傳 true
   }
 
   // 檢測欄位是否有 required 屬性，包含辨別瀏覽器是否為現代新版、支援HTML5
@@ -106,21 +91,6 @@
     return !el.value || el.value === el.placeholder; // 空值 => return true
   }
 
-  // 驗證不同 type 的輸入框
-  // Relies on the validateType object (shown at end of IIFE)
-  function validateTypes(el) {
-    if (!el.value) return false;                               // 欄位沒有值就傳 false 返回 (原始碼為true)
-    // Otherwise get the value from .data()
-    var type = $(el).data('type') || el.getAttribute('type');  // 擷取輸入框的 type
-                                                               // 另外使用 getAttribute() 
-                                                               // 則為若瀏覽器無法辨識 HTML5 的 DOM 特性，則會值街回傳text值
-    if (typeof validateType[type] === 'function') { // validateType 為自訂物件，[type]為物件key值
-                                                    // 此元件的 type 是否有在檢測方法內
-      return validateType[type](el);                // 若通過檢測方法會得到回傳的 true，再回傳 true
-    } else {                                        
-      return true;
-    }
-  }
 
   // 抓表單元件的 name 值來驗證輸入框，通過不為空值才會執行驗證
   function validateNames(el) {
@@ -208,7 +178,6 @@
   // -------------------------------------------------------------------------
   // E) 建立物件以驗證資料型別
   // -------------------------------------------------------------------------
-
   // 檢查值是否為有效，無效設定錯誤訊息
   // 有效返回 true，無效 false
   // validateTypes() 函式內用到
@@ -300,12 +269,27 @@
       }
       return valid;
     },
-    date: function (el) {                                  // 建立日期檢測方法
-      var valid = /^(\d{2}\/\d{2}\/\d{4})|(\d{4}-\d{2}-\d{2})$/.test(el.value);
-      if (!valid) {                                        
-        setErrorMessage(el, 'Please enter a valid date'); 
+    expireYear: function (el) {
+      if (el.value === '西元年') {
+        var valid = false;
+      } else {
+        var valid = true;
       }
-      return valid;                                     
+      if (!valid) {
+        setErrorMessage(el, '請選擇');
+      }
+      return valid;
+    },
+    expireMonth: function (el) {
+      if (el.value === '月') {
+        var valid = false;
+      } else {
+        var valid = true;
+      }
+      if (!valid) {
+        setErrorMessage(el, '請選擇');
+      }
+      return valid;
     }
   };
 
@@ -366,54 +350,70 @@
   //   6. 撈到的資料格式為string，轉成object => JSON.parse()
   //   7. 信箱已註冊返回表單，註冊成功跳至會員中心
   // -------------------------------------------------------------------------
+
+  // -------------------------------------------------------------------------
+  // 跳轉頁面
+  // -------------------------------------------------------------------------
   function goHref(formEl) {
-    var goHref = formEl.dataset.href;
-    location.href = goHref;    // 跳轉至指定的 url 頁面
+      // 跳轉至指定的 url 頁面
+      var goHref = formEl.dataset.href;
+      location.href = goHref;    
   }
 
-  var account = {};                // 儲存要傳送給伺服器的資料
+  // -------------------------------------------------------------------------
+  // 送出表單，向伺服器請求會員資料
+  // -------------------------------------------------------------------------
+  var signUpEmail = {};           // 儲存要傳送給伺服器的資料
+  var signUpCallback = {};        // 第一次 Ajax POST 撈回的資料
 
   function sendForm(formEl){
     var $formEl = $(formEl);       // 轉成 jquery 元件
     if (document.getElementById('email-login')){  // 有登入元件，表示在index.html
       var $emailEl = $formEl.find('.email');
       var $emailStr = $emailEl.val();
-      account.email = $emailStr;   // 資料使用 json 格式
+      signUpEmail.email = $emailStr;   // 資料使用 json 格式
 
       var xhr = new XMLHttpRequest();
       xhr.open('post', 'https://www.thef2e.com/api/isSignUp', true);
       xhr.setRequestHeader('Content-type', 'application/json');
-      var data = JSON.stringify(account);
+      var data = JSON.stringify(signUpEmail);
       xhr.send(data);
       loading();                   // loading 動畫
 
       xhr.onload = function () {
         removeLoading();           // 撈到資料，關閉 loading 動畫
-
-        var callbackData = JSON.parse(xhr.responseText);
-        var veriStr = callbackData.success;  // 此 Email 已報名過 => true
-         
-        if (formEl.id === "form-join"){
-          if (veriStr) {
-            setErrorMessage($emailEl, '此信箱已註冊');
-            showErrorMessage($emailEl);
-          } else {
-            removeErrorMessage($emailEl);
-            goHref(formEl);
-          }
-        } else if (formEl.id === "form-login") {
-          if (veriStr) {
-            localStorage.setItem('account', data);  // 紀錄登入帳號，存到localStorage
-            removeErrorMessage($emailEl);
-            goHref(formEl);
-          } else {
-            setErrorMessage($emailEl, '此信箱未註冊');
-            showErrorMessage($emailEl);
-          }
+        var callbackData = JSON.parse(xhr.responseText);              // obj
+        var isSuccess = callbackData.success;                         // 此 Email 已報名過 => true
+        
+        switch (formEl.id) {
+          case 'form-join':
+            if (isSuccess) {
+              setErrorMessage($emailEl, '此信箱已註冊');
+              showErrorMessage($emailEl);
+            } else {
+              sessionStorage.setItem('signUpEmail', data);                // 紀錄註冊帳號，存到sessionStorage
+              signUpCallback.email = $emailStr;
+              signUpCallback.nickName = '歡迎加入';
+              sessionStorage.setItem('signUpCallback', JSON.stringify(signUpCallback)); // 先將會員資料存到 sessionStorage 準備好
+              removeErrorMessage($emailEl);
+              goHref(formEl);
+            };
+            break;
+          case 'form-login':
+            if (isSuccess) {
+              sessionStorage.setItem('signUpEmail', data);                 // 紀錄登入帳號，存到sessionStorage
+              sessionStorage.setItem('signUpCallback', xhr.responseText);  // 撈回資料存入 localStorege
+              removeErrorMessage($emailEl);
+              goHref(formEl);
+            } else {
+              setErrorMessage($emailEl, '此信箱未註冊');
+              showErrorMessage($emailEl);
+            };
+            break;
         }
       } 
-    } else {
-      // 換頁前，我想要有1秒的loading()效果
+    }
+    if (document.getElementById('btn-submit-next')){
       goHref(formEl);
     }
   }
@@ -424,83 +424,153 @@
   // -------------------------------------------------------------------------
   // 撈取登入帳號的作品資料
   // -------------------------------------------------------------------------
-  if (window.location.pathname === '/account.html') {
-    
-    var accountGet = localStorage.getItem('account');
-  
-    var xhrAccount = new XMLHttpRequest();
-    xhrAccount.open('post', 'https://www.thef2e.com/api/stageCheck', true);
-    xhrAccount.setRequestHeader('Content-type', 'application/json');
-    xhrAccount.send(accountGet);
-    loading();
-
-    var items = document.getElementById('item')
-    var DOMstr = '';
- 
-    xhrAccount.onload = function (){
-      removeLoading(); 
-
-      var callbackData = JSON.parse(xhrAccount.responseText);
-
-      /*===================================================================*/
-      /* 讀取 callbackData 的資料，生成 DOM 元件，更新網頁內容
-      /*===================================================================*/
-
-      if (callbackData.length == 0 ) {
-        alert('你尚未繳件');
-      } else {
-      }
-
-      for (let i = 0; i < callbackData.length; i++) {
-        addItemToDOM(callbackData[i], i);
-      }
-      items.innerHTML = DOMstr;
-    }
-  }
-
-
   // stage 名稱 & 圖片
-  var itemObj = [
-    { name: 'Todo List',
+  var stageObj = [
+    {
+      stage: 1,
+      name: 'Todo List',
       img: 'stage-01.jpg'
     },
     {
+      stage: 2,
       name: 'Filter',
       img: 'stage-02.jpg'
     },
     {
+      stage: 3,
       name: 'Admin Order',
       img: 'stage-03.jpg'
     },
     {
+      stage: 4,
       name: 'Product Gallery',
       img: 'stage-04.jpg'
     },
     {
+      stage: 5,
       name: 'Comic Viewer',
       img: 'stage-05.jpg'
     },
     {
+      stage: 6,
       name: 'Form',
       img: 'stage-06.jpg'
     },
     {
+      stage: 7,
       name: 'Game',
-      img: 'stage-01.jpg'
+      img: 'stage-07.jpg'
     },
     {
-      name: '尚未公布',
-      img: 'banner-01-thef2e.jpg'
+      stage: 8,
+      name: 'Parallax Scrolling',
+      img: 'stage-08.jpg'
     },
     {
-      name: '尚未公布',
-      img: 'banner-01-thef2e.jpg'
+      stage: 9,
+      name: 'Skill Tree',
+      img: 'stage-09.jpg'
     }
   ]
+
   
+  /*===================================================================*/
+  /* 進入會員頁面時，讀取資料
+  /*===================================================================*/
+  var DOMstr = '';
+  if (window.location.pathname === '/account.html') {
+    if (!sessionStorage.getItem('stageCheck')){
+      // 撈取登入帳號的作品資料
+      var xhrAccount = new XMLHttpRequest();
+      xhrAccount.open('post', 'https://www.thef2e.com/api/stageCheck', true);
+      xhrAccount.setRequestHeader('Content-type', 'application/json');
+      xhrAccount.send(sessionStorage.getItem('signUpEmail'));
+      loading();
 
+      xhrAccount.onload = function () {
+        removeLoading();
+        sessionStorage.setItem('stageCheck', xhrAccount.responseText); // 撈回的作品存入 sessionStorage
+        loadData(JSON.parse(xhrAccount.responseText));
+      }
+    } else {
+      var callbackStageCheck = JSON.parse(sessionStorage.getItem('stageCheck'));
+      loadData(callbackStageCheck);
+    }
+  }
+
+  /*===================================================================*/
+  /* 讀取 callbackData 的資料，生成 DOM 元件，更新網頁內容
+  /*===================================================================*/
+  function loadData(callbackData){
+    var items = document.getElementById('item');
+    for (let i = 0; i < stageObj.length; i++) {       
+      for (let j = 0; j < callbackData.length; j++) {
+        if (stageObj[i].stage == callbackData[j].stage) {  
+          var stage = true;
+          var stageItem = callbackData[j];
+          var index = i;
+          break;
+        } else {
+          var stage = false;
+        }
+      }
+      
+      // 裡迴圈跑完拿到一個值。true / false 這個值決定要生成的DOM
+      if (stage) {
+        addItemToDOM(stageItem, index);
+      } else {
+        addIObjToDOM(stageObj[i]);
+      }
+    }
+    items.innerHTML = DOMstr;
+    accountInfo();
+  }
+
+
+
+  /*===================================================================*/
+  /* 顯示會員資料
+  /*===================================================================*/
+  if ((window.location.pathname === '/account-profile.html') || (window.location.pathname === '/account-creditCard.html')) {
+    accountInfo();
+  }
+
+
+  /*===================================================================*/
+  /* 登出，清除 sessionStorage 資料
+  /*===================================================================*/
+  if (document.getElementById('btn-logout')){
+    var logoutBtn = document.getElementById('btn-logout');
+    logoutBtn.addEventListener('click', function (e) {
+      sessionStorage.clear();
+    }, false);
+  }
+
+  if (window.location.pathname === '/index.html'){
+    sessionStorage.clear();
+  }
+  
+  /*===================================================================*/
+  /* 登出後在首頁時，禁止回上一頁
+  /*===================================================================*/
+  // function gotoUrl(url) {
+  //   // 取得歷史網址的長度
+  //   var len = history.length;
+
+  //   // 先回到 IE 啟動時的第一頁
+  //   history.go(-len);
+
+  //   // 再將網址轉向到目的頁面 ( 注意: 一定要用 location.replace 函式 )
+  //   location.replace(url);
+
+  //   return false;
+  // }
+
+
+  /*===================================================================*/
+  /* 生成DOM
+  /*===================================================================*/
   function addItemToDOM(item, j){
-
     var tagGroup = item.tag; // string 分割
     var tagArray = tagGroup.split(', ');
     var itemTagStr = '';
@@ -509,7 +579,7 @@
       itemTagStr += `<span class="badge badge-info">${tagArray[i]}</span>`;
     }
 
-    var stageTime = new Date(item.timeStamp);
+    var stageTime = new Date(item.timeStamp - (60 * 60 * 8 * 1000));
     var itemTimeStr = stageTime.getFullYear() + '/' + 
                      (stageTime.getMonth()+1) + '/' + 
                       stageTime.getDate() + ' ' +
@@ -517,28 +587,96 @@
                       stageTime.getMinutes() + ':' +
                       stageTime.getSeconds();
 
-    DOMstr = DOMstr +
-              `<div class="card card-customized">
-                <div class="card-img">
-                  <img class="card-img-aside" src="images/${itemObj[j].img}" weight="400" height="230" alt="">
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">${itemObj[j].name}</h5>
-                  <dl class="card-text dl-customized">
-                    <dt>繳件時間：</dt>
-                    <dd class="item-date">${itemTimeStr}</dd>
-                    <dt>作品網址：</dt>
-                    <dd><a class="item-link" href="${item.url}" target="_blank">${item.url}</a></dd>
-                    <dt>挑戰技術：</dt>
-                    <dd class="item-pill">${itemTagStr}</dd>
-                  </dl>
-                </div>
-                <div class="card-footer text-muted">
-                  <div class="card-footer-img"><img class="" src="images/icon-trophy.svg" alt=""></div>
-                </div>
-              </div>`;
+    DOMstr = DOMstr + `<div class="card card-customized">
+        <div class="card-img">
+          <img class="card-img-aside" src="images/${stageObj[j].img}" weight="400" height="230" alt="">
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">${stageObj[j].name}</h5>
+          <dl class="card-text dl-customized">
+            <dt>上傳時間：</dt>
+            <dd class="item-date">${itemTimeStr}</dd>
+            <dt>作品網址：</dt>
+            <dd><a class="item-link" href="${item.url}" target="_blank">${item.url}</a></dd>
+            <dt>挑戰技術：</dt>
+            <dd class="item-pill">${itemTagStr}</dd>
+          </dl>
+        </div>
+        <div class="card-footer text-muted">
+          <div class="card-footer-img"><img class="" src="images/icon-trophy.svg" alt=""></div>
+          <div class="stageNum">${item.stage}</div>
+        </div>
+      </div>`;
   }
 
+  function addIObjToDOM(stageObj){
+    DOMstr = DOMstr + `<div class="card card-customized">
+        <div class="card-img">
+          <img class="card-img-aside" src="images/${stageObj.img}" weight="400" height="230" alt="">
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">${stageObj.name}</h5>
+          <dl class="card-text dl-customized">
+            <dt>上傳時間：</dt>
+            <dd>未上傳</dd>
+            <dt>作品網址：</dt>
+            <dd>未上傳</dd>
+            <dt>挑戰技術：</dt>
+            <dd class="item-pill">未上傳</dd>
+          </dl>
+        </div>
+        <div class="card-footer text-muted">
+          <div class="card-footer-img"><img class="" src="images/icon-file.svg" alt=""></div>
+          <div class="stageNum">${stageObj.stage}</div>
+        </div>
+      </div>`;
+  }
+  
+
+  // -------------------------------------------------------------------------
+  // 撈取登入帳號的資料
+  // -------------------------------------------------------------------------
+  function accountInfo(){
+    
+    // 使用者帳號
+    document.getElementById('account-nickName').textContent = JSON.parse(sessionStorage.getItem('signUpCallback')).nickName;
+    document.getElementById('account-email').textContent = JSON.parse(sessionStorage.getItem('signUpEmail')).email;
+    
+    // 完成數量
+
+    var stageLen = JSON.parse(sessionStorage.getItem('stageCheck')).length;
+
+    document.getElementById('completedCount').textContent = stageLen;
+    document.getElementById('todoCount').textContent = 9 - stageLen;
+
+    // 進度條
+    var progress = document.querySelector('.progress-bar');
+    var counter = Math.ceil(stageLen / 9 * 100);
+    progress.setAttribute('style', `width: ${counter}%`);
+    progress.textContent = counter + '%';
+
+    // 大頭照
+    var photoEl = document.getElementById('account-photo');
+    var photoInput = document.getElementById('input-photo');
+
+    if (sessionStorage.getItem('accountPhoto')) {
+      photoEl.src = sessionStorage.getItem('accountPhoto');
+    }
+    
+    photoInput.addEventListener('change', function(){
+        
+      var files = this.files;  // 為物件 FileList {0: File(4639), length: 1 }
+
+      for(let i =0; i<files.length; i++){
+        var photoFile = window.URL.createObjectURL(files[i]);
+        photoEl.src = photoFile; // 顯示上傳的照片
+        sessionStorage.setItem('accountPhoto', photoFile);  // 撈回資料，存到 sessionStorage
+      }
+    }, false);
+  }
+
+
+  
   // -------------------------------------------------------------------------
   // 迴圈產生選單的 option 選項 (年月日)
   // -------------------------------------------------------------------------
