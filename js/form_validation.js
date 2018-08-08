@@ -478,7 +478,7 @@
   /* 進入會員頁面時，讀取資料
   /*===================================================================*/
   var DOMstr = '';
-  if (window.location.pathname === '/account.html') {
+  if (document.getElementById('item')) {
     if (!sessionStorage.getItem('stageCheck')){
       // 撈取登入帳號的作品資料
       var xhrAccount = new XMLHttpRequest();
@@ -490,18 +490,18 @@
       xhrAccount.onload = function () {
         removeLoading();
         sessionStorage.setItem('stageCheck', xhrAccount.responseText); // 撈回的作品存入 sessionStorage
-        loadData(JSON.parse(xhrAccount.responseText));
+        loadDataToDOM(JSON.parse(xhrAccount.responseText));
       }
     } else {
       var callbackStageCheck = JSON.parse(sessionStorage.getItem('stageCheck'));
-      loadData(callbackStageCheck);
+      loadDataToDOM(callbackStageCheck);
     }
   }
 
   /*===================================================================*/
   /* 讀取 callbackData 的資料，生成 DOM 元件，更新網頁內容
   /*===================================================================*/
-  function loadData(callbackData){
+  function loadDataToDOM(callbackData){
     var items = document.getElementById('item');
     for (let i = 0; i < stageObj.length; i++) {       
       for (let j = 0; j < callbackData.length; j++) {
@@ -531,9 +531,10 @@
   /*===================================================================*/
   /* 顯示會員資料
   /*===================================================================*/
-  if ((window.location.pathname === '/account-profile.html') || (window.location.pathname === '/account-creditCard.html')) {
+  if (document.querySelector('.account')) {
     accountInfo();
   }
+
 
 
   /*===================================================================*/
