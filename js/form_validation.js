@@ -478,32 +478,24 @@
   /* 進入會員頁面時，讀取資料
   /*===================================================================*/
   var DOMstr = '';
-  var address = location.hostname;
-  console.log(address + '/account.html');
-  if (window.location.pathname === (address + '/account.html')) {
+  if (document.getElementById('item')) {
     if (!sessionStorage.getItem('stageCheck')){
       // 撈取登入帳號的作品資料
       var xhrAccount = new XMLHttpRequest();
       xhrAccount.open('post', 'https://www.thef2e.com/api/stageCheck', true);
       xhrAccount.setRequestHeader('Content-type', 'application/json');
       xhrAccount.send(sessionStorage.getItem('signUpEmail'));
-      console.log('send 第二次xhr');
       loading();
 
       xhrAccount.onload = function () {
         removeLoading();
-        console.log('onload 第二次xhr');
         sessionStorage.setItem('stageCheck', xhrAccount.responseText); // 撈回的作品存入 sessionStorage
-        console.log('寫入資料');
         loadDataToDOM(JSON.parse(xhrAccount.responseText));
       }
     } else {
       var callbackStageCheck = JSON.parse(sessionStorage.getItem('stageCheck'));
       loadDataToDOM(callbackStageCheck);
     }
-  } else {
-    console.log('else 第二次xhr');
-
   }
 
   /*===================================================================*/
@@ -539,9 +531,10 @@
   /*===================================================================*/
   /* 顯示會員資料
   /*===================================================================*/
-  if ((window.location.pathname === '/account-profile.html') || (window.location.pathname === '/account-creditCard.html')) {
+  if (document.querySelector('.account')) {
     accountInfo();
   }
+
 
 
   /*===================================================================*/
