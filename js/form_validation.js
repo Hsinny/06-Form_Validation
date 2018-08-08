@@ -478,30 +478,38 @@
   /* 進入會員頁面時，讀取資料
   /*===================================================================*/
   var DOMstr = '';
-  if (window.location.pathname === '/account.html') {
+  var address = location.hostname;
+  console.log(address + '/account.html');
+  if (window.location.pathname === (address + '/account.html')) {
     if (!sessionStorage.getItem('stageCheck')){
       // 撈取登入帳號的作品資料
       var xhrAccount = new XMLHttpRequest();
       xhrAccount.open('post', 'https://www.thef2e.com/api/stageCheck', true);
       xhrAccount.setRequestHeader('Content-type', 'application/json');
       xhrAccount.send(sessionStorage.getItem('signUpEmail'));
+      console.log('send 第二次xhr');
       loading();
 
       xhrAccount.onload = function () {
         removeLoading();
+        console.log('onload 第二次xhr');
         sessionStorage.setItem('stageCheck', xhrAccount.responseText); // 撈回的作品存入 sessionStorage
-        loadData(JSON.parse(xhrAccount.responseText));
+        console.log('寫入資料');
+        loadDataToDOM(JSON.parse(xhrAccount.responseText));
       }
     } else {
       var callbackStageCheck = JSON.parse(sessionStorage.getItem('stageCheck'));
-      loadData(callbackStageCheck);
+      loadDataToDOM(callbackStageCheck);
     }
+  } else {
+    console.log('else 第二次xhr');
+
   }
 
   /*===================================================================*/
   /* 讀取 callbackData 的資料，生成 DOM 元件，更新網頁內容
   /*===================================================================*/
-  function loadData(callbackData){
+  function loadDataToDOM(callbackData){
     var items = document.getElementById('item');
     for (let i = 0; i < stageObj.length; i++) {       
       for (let j = 0; j < callbackData.length; j++) {
