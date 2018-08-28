@@ -20,11 +20,14 @@ section
   padding: 0 32px
 
 @media (max-width: 1199px)
+  main 
+    height: calc(100vh - 60px)
+
   .section-header
     height: 60px
     line-height: 60px
     text-align: center
-
+  
 
 /*------------------------------------*/
 /* Login  
@@ -290,6 +293,7 @@ input[type=file]
   .account
     height: auto
     border-bottom: $border-gray
+    position: relative
     .account-body
       width: 50%
       float: left
@@ -425,6 +429,17 @@ form
 label
   margin-bottom: 0
 
+// 取消 select 下拉框默认样式
+select, input[type="number"]
+  appearance: none
+  -moz-appearance: none
+  -webkit-appearance: none
+
+// 移除input type="number" 時瀏覽器自帶的上下增減箭頭
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button 
+  -webkit-appearance: none
+
 select.form-control:not([size]):not([multiple]) // 清除BS4預設
   height: 48px
 
@@ -465,6 +480,8 @@ select.form-control:not([size]):not([multiple]) // 清除BS4預設
         display: inline-block
     .btn
       margin: 16px
+      &:first-child
+        margin-bottom: 0
 
 .optional
   color: $pink

@@ -10427,6 +10427,8 @@ body {
 @media (max-width: 639px) {
   .navbar {
     height: 60px; }
+    .navbar .nav-link {
+      padding: 0; }
   .navbar-brand img {
     width: 150px; } }
 
@@ -10455,6 +10457,8 @@ section {
   padding: 0 32px; }
 
 @media (max-width: 1199px) {
+  main {
+    height: calc(100vh - 60px); }
   .section-header {
     height: 60px;
     line-height: 60px;
@@ -10751,7 +10755,8 @@ input[type=file] {
     margin-bottom: 0.5rem; }
   .account {
     height: auto;
-    border-bottom: 1px solid #ced4da; }
+    border-bottom: 1px solid #ced4da;
+    position: relative; }
     .account .account-body {
       width: 50%;
       float: left; }
@@ -10894,6 +10899,15 @@ form .form-control {
 label {
   margin-bottom: 0; }
 
+select, input[type="number"] {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none; }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none; }
+
 select.form-control:not([size]):not([multiple]) {
   height: 48px; }
 
@@ -10934,6 +10948,8 @@ select.form-control:not([size]):not([multiple]) {
         display: inline-block; }
     .form-customized .form-group .btn {
       margin: 16px; }
+      .form-customized .form-group .btn:first-child {
+        margin-bottom: 0; }
 
 .optional {
   color: #FF537B;

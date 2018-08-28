@@ -212,27 +212,39 @@
       }
       return valid;
     },
-    birthYear: function (el) {                         // 數字檢測方法
-      var valid = /^\d+$/.test(el.value);
+    birthYear: function (el) {     
+      if (el.value === '年') {
+        var valid = false;
+      } else {
+        var valid = true;
+      }
       if (!valid) {
         setErrorMessage(el, '請選擇');
       }
       return valid;
     },
-    birthMonth: function (el) {                       // 數字檢測方法
-      var valid = /^\d+$/.test(el.value);
+    birthMonth: function (el) {     
+      if (el.value === '月') {
+        var valid = false;
+      } else {
+        var valid = true;
+      }
       if (!valid) {
         setErrorMessage(el, '請選擇');
       }
       return valid;
     },
-    birthDay: function (el) {                          // 數字檢測方法
-      var valid = /^\d+$/.test(el.value);
-      if (!valid) {
-        setErrorMessage(el, '請選擇');
+    birthDay: function (el) {                         
+      if(el.value === '日') {
+        var valid = false;
+      } else {
+        var valid = true;
       }
+      if(!valid) {
+      setErrorMessage(el, '請選擇');
+    }
       return valid;
-    },
+  },
     city: function (el) {     
       if (el.value === '請選擇'){
         var valid = false;
@@ -270,7 +282,7 @@
       return valid;
     },
     expireYear: function (el) {
-      if (el.value === '西元年') {
+      if (el.value === '年') {
         var valid = false;
       } else {
         var valid = true;
@@ -551,6 +563,8 @@
     sessionStorage.clear();
   }
   
+
+
   /*===================================================================*/
   /* 登出後在首頁時，禁止回上一頁
   /*===================================================================*/
@@ -566,6 +580,7 @@
 
   //   return false;
   // }
+
 
 
   /*===================================================================*/
@@ -690,12 +705,12 @@
 
     if (from < to) {
       for (var i = from; i < to + 1; i++) {
-        var option = `<option>${i}</option>`;
+        var option = `<option>${i}${unit}</option>`;
         str += option;
       }
     } else {
       for (var i = from; i > to - 1; i--) {
-        var option = `<option>${i}</option>`;
+        var option = `<option>${i}${unit}</option>`;
         str += option;
       }
     }
@@ -746,7 +761,7 @@
     var cityData, regionData;    // 用來存放 json 內的縣市、地區資料
 
     var xhrCity = new XMLHttpRequest();
-    xhrCity.open('get', '../city.json', true); //https://hsinny.github.io/06-Form_Validation/city.json
+    xhrCity.open('get', 'https://hsinny.github.io/06-Form_Validation/city.json', true);
     xhrCity.send('');
     xhrCity.onload = function () {
       var callbackData = JSON.parse(xhrCity.responseText);
